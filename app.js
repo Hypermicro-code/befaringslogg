@@ -32,8 +32,10 @@ function openProject(index) {
     const content = document.getElementById('content');
 
     content.innerHTML = `
-        <h2>${proj.name}</h2>
-        <p><strong>Dato:</strong> ${proj.date}</p>
+        <div class="project-banner">
+            <h2>${proj.name}</h2>
+            <p>${proj.date}</p>
+        </div>
         <p><strong>Info:</strong> ${proj.info}</p>
         <h3>Målelogg</h3>
         <ul id="measurementList"></ul>
