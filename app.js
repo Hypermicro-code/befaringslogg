@@ -27,6 +27,7 @@ function displayProjects() {
 }
 
 function openProject(index) {
+    updateHeader(proj);
     currentProjectIndex = index;
     const proj = projects[index];
     const content = document.getElementById('content');
@@ -72,6 +73,7 @@ function addMeasurement() {
 }
 
 function goBack() {
+    updateHeader();
     const content = document.getElementById('content');
     content.innerHTML = `
         <p>Velkommen! Velg et prosjekt eller opprett et nytt.</p>
