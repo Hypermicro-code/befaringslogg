@@ -81,6 +81,7 @@ function goBack() {
     `;
     displayProjects();
 }
+
 function updateHeader(project = null) {
     const header = document.querySelector('header');
     if (project) {
@@ -97,4 +98,5 @@ function updateHeader(project = null) {
         `;
     }
 }
+
 window.onload = displayProjects;
