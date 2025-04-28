@@ -1,12 +1,14 @@
 let projects = JSON.parse(localStorage.getItem('projects')) || [];
+let currentProjectIndex = null;
 
 function createProject() {
     const name = prompt("Prosjektnavn:");
-    const date = prompt("Dato for befaring (dd.mm.yyyy):");
+    const today = new Date().toISOString().split('T')[0];  // yyyy-mm-dd
+    const date = prompt("Dato for befaring (åååå-mm-dd):", today);
     const info = prompt("Generelle opplysninger:");
 
     if (name) {
-        const project = { name, date, info, measurements: [] };
+        const project = { name, date, info, measurements: [], images: [] };
         projects.push(project);
         localStorage.setItem('projects', JSON.stringify(projects));
         displayProjects();
@@ -25,15 +27,55 @@ function displayProjects() {
 }
 
 function openProject(index) {
+    currentProjectIndex = index;
     const proj = projects[index];
-    const measurement = prompt(`Legg til måling for ${proj.name} (i meter, f.eks. 3.25):`);
+    const content = document.getElementById('content');
 
-    if (measurement) {
-        proj.measurements.push(parseFloat(measurement).toFixed(2) + " m");
+    content.innerHTML = `
+        <h2>${proj.name}</h2>
+        <p><strong>Dato:</strong> ${proj.date}</p>
+        <p><strong>Info:</strong> ${proj.info}</p>
+        <h3>Målelogg</h3>
+        <ul id="measurementList"></ul>
+        <button onclick="addMeasurement()">Legg til måling</button>
+        <br><br>
+        <button onclick="goBack()">Tilbake</button>
+    `;
+
+    displayMeasurements();
+}
+
+function displayMeasurements() {
+    const proj = projects[currentProjectIndex];
+    const list = document.getElementById('measurementList');
+    list.innerHTML = '';
+
+    proj.measurements.forEach(m => {
+        const li = document.createElement('li');
+        li.textContent = `${m.description}: ${m.value} m`;
+        list.appendChild(li);
+    });
+}
+
+function addMeasurement() {
+    const description = prompt("Beskrivelse av måling:");
+    const value = prompt("Måleverdi i meter (f.eks. 5.75):");
+
+    if (description && value) {
+        const proj = projects[currentProjectIndex];
+        proj.measurements.push({ description, value: parseFloat(value).toFixed(2) });
         localStorage.setItem('projects', JSON.stringify(projects));
+        displayMeasurements();
     }
+}
 
-    alert(`Prosjekt: ${proj.name}\nDato: ${proj.date}\nInfo: ${proj.info}\n\nMålinger:\n${proj.measurements.join('\n')}`);
+function goBack() {
+    const content = document.getElementById('content');
+    content.innerHTML = `
+        <p>Velkommen! Velg et prosjekt eller opprett et nytt.</p>
+        <ul id="projectList"></ul>
+    `;
+    displayProjects();
 }
 
 window.onload = displayProjects;
