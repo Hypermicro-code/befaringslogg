@@ -79,5 +79,20 @@ function goBack() {
     `;
     displayProjects();
 }
-
+function updateHeader(project = null) {
+    const header = document.querySelector('header');
+    if (project) {
+        header.innerHTML = `
+            <div class="project-header-box">
+                <strong>${project.name}</strong><br>
+                ${project.date}
+            </div>
+        `;
+    } else {
+        header.innerHTML = `
+            <h1>Befaringslogg</h1>
+            <button onclick="createProject()">Nytt Prosjekt</button>
+        `;
+    }
+}
 window.onload = displayProjects;
