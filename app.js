@@ -82,17 +82,32 @@ function displayAreas() {
     });
 }
 
-function displayAreaMeasurements(areaIndex) {
+function editMeasurement(areaIndex, measurementIndex) {
     const proj = projects[currentProjectIndex];
     const area = proj.areas[areaIndex];
-    const list = document.getElementById('measurementList');
-    list.innerHTML = '';
+    const measurement = area.measurements[measurementIndex];
 
-    area.measurements.forEach(m => {
-        const li = document.createElement('li');
-        li.textContent = `${m.description}: ${m.value} m`;
-        list.appendChild(li);
-    });
+    const newDescription = prompt("Ny beskrivelse:", measurement.description);
+    const newValue = prompt("Ny måleverdi (i meter):", measurement.value);
+
+    if (newDescription && newValue) {
+        measurement.description = newDescription;
+        measurement.value = parseFloat(newValue).toFixed(2);
+        localStorage.setItem('projects', JSON.stringify(projects));
+        displayAreaMeasurements(areaIndex);
+    }
+}
+
+function deleteMeasurement(areaIndex, measurementIndex) {
+    const confirmDelete = confirm("Er du sikker på at du vil slette denne målingen?");
+    if (!confirmDelete) return;
+
+    const proj = projects[currentProjectIndex];
+    const area = proj.areas[areaIndex];
+    area.measurements.splice(measurementIndex, 1);
+
+    localStorage.setItem('projects', JSON.stringify(projects));
+    displayAreaMeasurements(areaIndex);
 }
 
 function displayAreaImages(areaIndex) {
