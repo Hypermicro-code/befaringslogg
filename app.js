@@ -46,15 +46,15 @@ function openProject(index) {
     content.innerHTML = `
         <div class="project-content">
             <p><strong>Info:</strong> ${proj.info}</p>
-            <h3>Målelogg</h3>
-            <ul id="measurementList"></ul>
-            <button onclick="addMeasurement()">Legg til måling</button>
+            <h3>Områder</h3>
+            <ul id="areaList"></ul>
+            <button onclick="addArea()">Legg til område</button>
             <br><br>
             <button onclick="goBack()">Tilbake</button>
         </div>
     `;
 
-    displayMeasurements();
+    displayAreas();
 }
 
 function displayMeasurements() {
@@ -69,6 +69,45 @@ function displayMeasurements() {
     });
 }
 
+function displayAreas() {
+    const proj = projects[currentProjectIndex];
+    const list = document.getElementById('areaList');
+    list.innerHTML = '';
+
+    proj.areas?.forEach((area, index) => {
+        const li = document.createElement('li');
+        li.textContent = area.name;
+        li.onclick = () => openArea(index);
+        list.appendChild(li);
+    });
+}
+
+function addArea() {
+    const name = prompt("Navn på område:");
+    if (!name) return;
+
+    const proj = projects[currentProjectIndex];
+    if (!proj.areas) proj.areas = [];
+
+    proj.areas.push({ name, measurements: [], comment: "", images: [] });
+    localStorage.setItem('projects', JSON.stringify(projects));
+    displayAreas();
+}
+
+function openArea(areaIndex) {
+    const proj = projects[currentProjectIndex];
+    const area = proj.areas[areaIndex];
+
+    const content = document.getElementById('content');
+    content.innerHTML = `
+        <div class="project-content">
+            <h3>${area.name}</h3>
+            <p><em>Her kommer målinger, bilder og kommentarer!</em></p>
+            <br>
+            <button onclick="openProject(${currentProjectIndex})">Tilbake til prosjekt</button>
+        </div>
+    `;
+}
 function addMeasurement() {
     const description = prompt("Beskrivelse av måling:");
     const value = prompt("Måleverdi i meter (f.eks. 5.75):");
