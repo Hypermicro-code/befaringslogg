@@ -72,11 +72,13 @@ function addMeasurement() {
 
 function goBack() {
     updateHeader();
-    
+
     const content = document.getElementById('content');
     content.innerHTML = `
-        <p>Velkommen! Velg et prosjekt eller opprett et nytt.</p>
-        <ul id="projectList"></ul>
+        <div class="project-content">
+            <p>Velkommen! Velg et prosjekt eller opprett et nytt.</p>
+            <ul id="projectList"></ul>
+        </div>
     `;
     displayProjects();
 }
