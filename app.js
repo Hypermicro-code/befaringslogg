@@ -57,14 +57,21 @@ function openProject(index) {
     displayAreas();
 }
 
-function displayMeasurements() {
+function displayAreaMeasurements(areaIndex) {
     const proj = projects[currentProjectIndex];
+    const area = proj.areas[areaIndex];
     const list = document.getElementById('measurementList');
     list.innerHTML = '';
 
-    proj.measurements.forEach(m => {
+    if (!area.measurements) return; // <-- Lagt til dette
+
+    area.measurements.forEach((m, i) => {
         const li = document.createElement('li');
-        li.textContent = `${m.description}: ${m.value} m`;
+        li.innerHTML = `
+            ${m.description}: ${m.value} m
+            <button onclick="editMeasurement(${areaIndex}, ${i})">✏️</button>
+            <button onclick="deleteMeasurement(${areaIndex}, ${i})">🗑️</button>
+        `;
         list.appendChild(li);
     });
 }
