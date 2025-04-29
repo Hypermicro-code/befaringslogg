@@ -28,23 +28,19 @@ function displayProjects() {
 
 function openProject(index) {
     currentProjectIndex = index;
-    const proj = projects[index]
-    
+    const proj = projects[index];
     updateHeader(proj);
-    
-    const content = document.getElementById('content');
 
+    const content = document.getElementById('content');
     content.innerHTML = `
-        <div class="project-banner">
-            <h2>${proj.name}</h2>
-            <p>${proj.date}</p>
+        <div class="project-content">
+            <p><strong>Info:</strong> ${proj.info}</p>
+            <h3>Målelogg</h3>
+            <ul id="measurementList"></ul>
+            <button onclick="addMeasurement()">Legg til måling</button>
+            <br><br>
+            <button onclick="goBack()">Tilbake</button>
         </div>
-        <p><strong>Info:</strong> ${proj.info}</p>
-        <h3>Målelogg</h3>
-        <ul id="measurementList"></ul>
-        <button onclick="addMeasurement()">Legg til måling</button>
-        <br><br>
-        <button onclick="goBack()">Tilbake</button>
     `;
 
     displayMeasurements();
