@@ -127,12 +127,23 @@ function openArea(areaIndex) {
     content.innerHTML = `
         <div class="project-content">
             <h3>${area.name}</h3>
+
+            <h4>Målelogg</h4>
             <ul id="measurementList"></ul>
             <button onclick="addMeasurementToArea(${areaIndex})">Legg til måling</button>
+
+            <h4>Kommentar</h4>
+            <textarea id="areaComment" rows="5" style="width:90%;max-width:400px;">${area.comment || ''}</textarea>
+
             <br><br>
             <button onclick="openProject(${currentProjectIndex})">Tilbake til prosjekt</button>
         </div>
     `;
+
+    document.getElementById('areaComment').addEventListener('input', function() {
+        area.comment = this.value;
+        localStorage.setItem('projects', JSON.stringify(projects));
+    });
 
     displayAreaMeasurements(areaIndex);
 }
