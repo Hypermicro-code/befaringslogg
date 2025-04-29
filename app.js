@@ -82,6 +82,31 @@ function displayAreas() {
     });
 }
 
+function displayAreaMeasurements(areaIndex) {
+    const proj = projects[currentProjectIndex];
+    const area = proj.areas[areaIndex];
+    const list = document.getElementById('measurementList');
+    list.innerHTML = '';
+
+    area.measurements.forEach(m => {
+        const li = document.createElement('li');
+        li.textContent = `${m.description}: ${m.value} m`;
+        list.appendChild(li);
+    });
+}
+function addMeasurementToArea(areaIndex) {
+    const description = prompt("Beskrivelse av måling:");
+    const value = prompt("Måleverdi i meter (f.eks. 5.75):");
+
+    if (description && value) {
+        const proj = projects[currentProjectIndex];
+        const area = proj.areas[areaIndex];
+
+        area.measurements.push({ description, value: parseFloat(value).toFixed(2) });
+        localStorage.setItem('projects', JSON.stringify(projects));
+        displayAreaMeasurements(areaIndex);
+    }
+}
 function addArea() {
     const name = prompt("Navn på område:");
     if (!name) return;
@@ -102,11 +127,14 @@ function openArea(areaIndex) {
     content.innerHTML = `
         <div class="project-content">
             <h3>${area.name}</h3>
-            <p><em>Her kommer målinger, bilder og kommentarer!</em></p>
-            <br>
+            <ul id="measurementList"></ul>
+            <button onclick="addMeasurementToArea(${areaIndex})">Legg til måling</button>
+            <br><br>
             <button onclick="openProject(${currentProjectIndex})">Tilbake til prosjekt</button>
         </div>
     `;
+
+    displayAreaMeasurements(areaIndex);
 }
 function addMeasurement() {
     const description = prompt("Beskrivelse av måling:");
