@@ -81,10 +81,16 @@ function displayAreas() {
     const list = document.getElementById('areaList');
     list.innerHTML = '';
 
-    proj.areas?.forEach((area, index) => {
+    if (!proj.areas) return;
+
+    proj.areas.forEach((area, index) => {
         const li = document.createElement('li');
-        li.textContent = area.name;
-        li.onclick = () => openArea(index);
+        li.innerHTML = `
+            ${area.name}
+            <button onclick="openArea(${index})">Åpne</button>
+            <button onclick="editArea(${index})">✏️</button>
+            <button onclick="deleteArea(${index})">🗑️</button>
+        `;
         list.appendChild(li);
     });
 }
@@ -279,5 +285,28 @@ function deleteImage(areaIndex, imageIndex) {
     area.images.splice(imageIndex, 1);
     localStorage.setItem('projects', JSON.stringify(projects));
     displayAreaImages(areaIndex);
+}
+
+function editArea(areaIndex) {
+    const proj = projects[currentProjectIndex];
+    const area = proj.areas[areaIndex];
+
+    const newName = prompt("Nytt navn for området:", area.name);
+    if (newName) {
+        area.name = newName;
+        localStorage.setItem('projects', JSON.stringify(projects));
+        displayAreas();
+    }
+}
+
+function deleteArea(areaIndex) {
+    const confirmDelete = confirm("Er du sikker på at du vil slette dette området?");
+    if (!confirmDelete) return;
+
+    const proj = projects[currentProjectIndex];
+    proj.areas.splice(areaIndex, 1);
+
+    localStorage.setItem('projects', JSON.stringify(projects));
+    displayAreas();
 }
 window.onload = displayProjects;
