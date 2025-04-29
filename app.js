@@ -135,6 +135,10 @@ function openArea(areaIndex) {
             <h4>Kommentar</h4>
             <textarea id="areaComment" rows="5" style="width:90%;max-width:400px;">${area.comment || ''}</textarea>
 
+            <h4>Bilder</h4>
+            <input type="file" id="imageUpload" accept="image/*" multiple>
+            <div id="imageGallery" style="margin-top:10px;"></div>
+
             <br><br>
             <button onclick="openProject(${currentProjectIndex})">Tilbake til prosjekt</button>
         </div>
@@ -145,7 +149,22 @@ function openArea(areaIndex) {
         localStorage.setItem('projects', JSON.stringify(projects));
     });
 
+    document.getElementById('imageUpload').addEventListener('change', function(event) {
+        const files = Array.from(event.target.files);
+        files.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                area.images.push(e.target.result);
+                localStorage.setItem('projects', JSON.stringify(projects));
+                displayAreaImages(areaIndex);
+            };
+            reader.readAsDataURL(file);
+        });
+        event.target.value = ''; // Reset input after upload
+    });
+
     displayAreaMeasurements(areaIndex);
+    displayAreaImages(areaIndex);
 }
 function addMeasurement() {
     const description = prompt("Beskrivelse av måling:");
