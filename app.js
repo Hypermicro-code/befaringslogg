@@ -123,14 +123,36 @@ function displayAreaImages(areaIndex) {
     const gallery = document.getElementById('imageGallery');
     gallery.innerHTML = '';
 
-    area.images?.forEach(src => {
+    if (!area.images) return;
+
+    area.images.forEach((src, i) => {
+        const container = document.createElement('div');
+        container.style.position = 'relative';
+        container.style.display = 'inline-block';
+        container.style.margin = '5px';
+
         const img = document.createElement('img');
         img.src = src;
         img.style.width = '80px';
         img.style.height = '80px';
         img.style.objectFit = 'cover';
-        img.style.margin = '5px';
-        gallery.appendChild(img);
+        img.style.borderRadius = '5px';
+
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = '🗑️';
+        deleteBtn.style.position = 'absolute';
+        deleteBtn.style.top = '0';
+        deleteBtn.style.right = '0';
+        deleteBtn.style.background = 'rgba(255, 0, 0, 0.7)';
+        deleteBtn.style.border = 'none';
+        deleteBtn.style.color = 'white';
+        deleteBtn.style.cursor = 'pointer';
+        deleteBtn.style.borderRadius = '0 5px 0 5px';
+        deleteBtn.onclick = () => deleteImage(areaIndex, i);
+
+        container.appendChild(img);
+        container.appendChild(deleteBtn);
+        gallery.appendChild(container);
     });
 }
 function addMeasurementToArea(areaIndex) {
@@ -247,4 +269,15 @@ function updateHeader(project = null) {
     }
 }
 
+function deleteImage(areaIndex, imageIndex) {
+    const confirmDelete = confirm("Er du sikker på at du vil slette dette bildet?");
+    if (!confirmDelete) return;
+
+    const proj = projects[currentProjectIndex];
+    const area = proj.areas[areaIndex];
+
+    area.images.splice(imageIndex, 1);
+    localStorage.setItem('projects', JSON.stringify(projects));
+    displayAreaImages(areaIndex);
+}
 window.onload = displayProjects;
