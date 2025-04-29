@@ -21,8 +21,12 @@ function displayProjects() {
 
     projects.forEach((proj, index) => {
         const li = document.createElement('li');
-        li.textContent = `${proj.name} - ${proj.date}`;
-        li.onclick = () => openProject(index);
+        li.innerHTML = `
+            ${proj.name} - ${proj.date}
+            <button onclick="openProject(${index})">Åpne</button>
+            <button onclick="editProject(${index})">✏️</button>
+            <button onclick="deleteProject(${index})">🗑️</button>
+        `;
         list.appendChild(li);
     });
 
@@ -36,6 +40,7 @@ function displayProjects() {
     const wrapper = content.querySelector('.project-content');
     wrapper.appendChild(list);
 }
+
 
 function openProject(index) {
     currentProjectIndex = index;
@@ -308,5 +313,29 @@ function deleteArea(areaIndex) {
 
     localStorage.setItem('projects', JSON.stringify(projects));
     displayAreas();
+}
+function editProject(projectIndex) {
+    const proj = projects[projectIndex];
+
+    const newName = prompt("Nytt prosjektnavn:", proj.name);
+    const newDate = prompt("Ny dato (f.eks. 2025-06-01):", proj.date);
+    const newInfo = prompt("Ny info:", proj.info);
+
+    if (newName && newDate && newInfo) {
+        proj.name = newName;
+        proj.date = newDate;
+        proj.info = newInfo;
+        localStorage.setItem('projects', JSON.stringify(projects));
+        displayProjects();
+    }
+}
+
+function deleteProject(projectIndex) {
+    const confirmDelete = confirm("Er du sikker på at du vil slette dette prosjektet?");
+    if (!confirmDelete) return;
+
+    projects.splice(projectIndex, 1);
+    localStorage.setItem('projects', JSON.stringify(projects));
+    displayProjects();
 }
 window.onload = displayProjects;
