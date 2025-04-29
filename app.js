@@ -94,6 +94,23 @@ function displayAreaMeasurements(areaIndex) {
         list.appendChild(li);
     });
 }
+
+function displayAreaImages(areaIndex) {
+    const proj = projects[currentProjectIndex];
+    const area = proj.areas[areaIndex];
+    const gallery = document.getElementById('imageGallery');
+    gallery.innerHTML = '';
+
+    area.images?.forEach(src => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.style.width = '80px';
+        img.style.height = '80px';
+        img.style.objectFit = 'cover';
+        img.style.margin = '5px';
+        gallery.appendChild(img);
+    });
+}
 function addMeasurementToArea(areaIndex) {
     const description = prompt("Beskrivelse av måling:");
     const value = prompt("Måleverdi i meter (f.eks. 5.75):");
