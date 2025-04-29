@@ -16,14 +16,25 @@ function createProject() {
 }
 
 function displayProjects() {
-    const list = document.getElementById('projectList');
-    list.innerHTML = '';
+    const list = document.createElement('ul');
+    list.id = 'projectList';
+
     projects.forEach((proj, index) => {
         const li = document.createElement('li');
         li.textContent = `${proj.name} - ${proj.date}`;
         li.onclick = () => openProject(index);
         list.appendChild(li);
     });
+
+    const content = document.getElementById('content');
+    content.innerHTML = `
+        <div class="project-content">
+            <p>Velkommen! Velg et prosjekt eller opprett et nytt.</p>
+        </div>
+    `;
+
+    const wrapper = content.querySelector('.project-content');
+    wrapper.appendChild(list);
 }
 
 function openProject(index) {
