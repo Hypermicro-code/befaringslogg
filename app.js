@@ -339,4 +339,97 @@ function deleteProject(projectIndex) {
     localStorage.setItem('projects', JSON.stringify(projects));
     displayProjects();
 }
+async function exportProjectToPDF() {
+    const proj = projects[currentProjectIndex];
+    const includeImages = confirm("Vil du inkludere bilder i PDF-en?");
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    let y = 10;
+
+    doc.setFontSize(16);
+    doc.text(`Prosjekt: ${proj.name}`, 10, y);
+    y += 8;
+    doc.setFontSize(12);
+    doc.text(`Dato: ${proj.date}`, 10, y);
+    y += 8;
+    doc.text(`Info: ${proj.info}`, 10, y);
+    y += 10;
+
+    if (!proj.areas || proj.areas.length === 0) {
+        doc.text("Ingen områder registrert.", 10, y);
+    } else {
+        for (const area of proj.areas) {
+            doc.setFontSize(14);
+            doc.text(`Område: ${area.name}`, 10, y);
+            y += 8;
+
+            if (area.comment) {
+                doc.setFontSize(11);
+                const splitComment = doc.splitTextToSize(`Kommentar: ${area.comment}`, 180);
+                doc.text(splitComment, 10, y);
+                y += splitComment.length * 6;
+            }
+
+            if (area.measurements && area.measurements.length > 0) {
+                doc.setFontSize(11);
+                doc.text("Målinger:", 10, y);
+                y += 6;
+                area.measurements.forEach(m => {
+                    doc.text(`• ${m.description}: ${m.value} m`, 14, y);
+                    y += 6;
+                });
+            } else {
+                doc.text("Ingen målinger registrert.", 10, y);
+                y += 6;
+            }
+
+            // Bilder
+            if (includeImages && area.images && area.images.length > 0) {
+                doc.text("Bilder:", 10, y);
+                y += 6;
+                let x = 10;
+                let rowHeight = 0;
+
+                for (let i = 0; i < area.images.length; i++) {
+                    try {
+                        const img = await loadImage(area.images[i]);
+                        const imgWidth = 60;
+                        const imgHeight = 45;
+                        if (x + imgWidth > 200) {
+                            x = 10;
+                            y += rowHeight + 5;
+                            rowHeight = 0;
+                        }
+                        doc.addImage(img, 'JPEG', x, y, imgWidth, imgHeight);
+                        x += imgWidth + 5;
+                        rowHeight = Math.max(rowHeight, imgHeight);
+                    } catch (e) {
+                        doc.text("Kunne ikke laste bilde.", 10, y);
+                        y += 6;
+                    }
+                }
+                y += rowHeight + 10;
+            }
+
+            y += 10;
+            if (y > 260) {
+                doc.addPage();
+                y = 10;
+            }
+        }
+    }
+
+    doc.save(`${proj.name.replace(/\s+/g, '_')}.pdf`);
+}
+
+function loadImage(dataUrl) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = dataUrl;
+    });
+}
+
 window.onload = displayProjects;
