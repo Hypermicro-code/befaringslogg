@@ -170,6 +170,50 @@ img.onclick = () => showImageModal(src);
         gallery.appendChild(container);
     });
 }
+function openArea(areaIndex) {
+    const proj = projects[currentProjectIndex];
+    const area = proj.areas[areaIndex];
+
+    const content = document.getElementById('content');
+    content.innerHTML = `
+        <div class="project-content">
+            <h3>${area.name}</h3>
+
+            <h4>Målelogg</h4>
+            <ul id="measurementList"></ul>
+            <button onclick="addMeasurementToArea(${areaIndex})">Legg til måling</button>
+
+            <h4>Notater</h4>
+            <button onclick="openNoteEditor(${areaIndex})">Nytt notat</button>
+            <ul id="noteList"></ul>
+
+            <h4>Bilder</h4>
+            <input type="file" id="imageUpload" accept="image/*" multiple>
+            <div id="imageGallery" style="margin-top:10px;"></div>
+
+            <br><br>
+            <button onclick="openProject(${currentProjectIndex})">Tilbake til prosjekt</button>
+        </div>
+    `;
+
+    document.getElementById('imageUpload').addEventListener('change', function(event) {
+        const files = Array.from(event.target.files);
+        files.forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                area.images.push(e.target.result);
+                localStorage.setItem('projects', JSON.stringify(projects));
+                displayAreaImages(areaIndex);
+            };
+            reader.readAsDataURL(file);
+        });
+        event.target.value = '';
+    });
+
+    displayAreaMeasurements(areaIndex);
+    displayAreaImages(areaIndex);
+    displayAreaNotes(areaIndex);
+}
 function addMeasurementToArea(areaIndex) {
     const description = prompt("Beskrivelse av måling:");
     const value = prompt("Måleverdi i meter (f.eks. 5.75):");
@@ -208,8 +252,9 @@ function openArea(areaIndex) {
             <ul id="measurementList"></ul>
             <button onclick="addMeasurementToArea(${areaIndex})">Legg til måling</button>
 
-            <h4>Kommentar</h4>
-            <textarea id="areaComment" rows="5" style="width:90%;max-width:400px;">${area.comment || ''}</textarea>
+            <h4>Notater</h4>
+            <button onclick="openNoteEditor(${areaIndex})">Nytt notat</button>
+            <ul id="noteList"></ul>
 
             <h4>Bilder</h4>
             <input type="file" id="imageUpload" accept="image/*" multiple>
@@ -219,11 +264,6 @@ function openArea(areaIndex) {
             <button onclick="openProject(${currentProjectIndex})">Tilbake til prosjekt</button>
         </div>
     `;
-
-    document.getElementById('areaComment').addEventListener('input', function() {
-        area.comment = this.value;
-        localStorage.setItem('projects', JSON.stringify(projects));
-    });
 
     document.getElementById('imageUpload').addEventListener('change', function(event) {
         const files = Array.from(event.target.files);
@@ -236,11 +276,12 @@ function openArea(areaIndex) {
             };
             reader.readAsDataURL(file);
         });
-        event.target.value = ''; // Reset input after upload
+        event.target.value = '';
     });
 
     displayAreaMeasurements(areaIndex);
     displayAreaImages(areaIndex);
+    displayAreaNotes(areaIndex);
 }
 function addMeasurement() {
     const description = prompt("Beskrivelse av måling:");
@@ -470,5 +511,30 @@ function showImageModal(src) {
             modal.style.display = 'none';
         }
     };
+}
+function openNoteEditor(areaIndex) {
+    const content = document.getElementById('content');
+    content.innerHTML = `
+        <div class="project-content">
+            <h3>Nytt notat</h3>
+            <textarea id="noteInput" rows="15" style="width:90%; max-width:500px;"></textarea>
+            <br><br>
+            <button onclick="saveNote(${areaIndex})">Lagre notat</button>
+            <button onclick="openArea(${areaIndex})">Avbryt</button>
+        </div>
+    `;
+}
+
+function saveNote(areaIndex) {
+    const text = document.getElementById('noteInput').value.trim();
+    if (!text) return alert("Notatet er tomt.");
+    
+    const proj = projects[currentProjectIndex];
+    const area = proj.areas[areaIndex];
+    if (!area.notes) area.notes = [];
+
+    area.notes.push(text);
+    localStorage.setItem('projects', JSON.stringify(projects));
+    openArea(areaIndex);
 }
 window.onload = displayProjects;
