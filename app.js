@@ -54,6 +54,7 @@ function openProject(index) {
             <h3>Områder</h3>
             <ul id="areaList"></ul>
             <button onclick="addArea()">Legg til område</button>
+            <button onclick="exportProjectToPDF()">Eksporter til PDF</button>
             <br><br>
             <button onclick="goBack()">Tilbake</button>
         </div>
