@@ -170,6 +170,23 @@ img.onclick = () => showImageModal(src);
         gallery.appendChild(container);
     });
 }
+function displayAreaNotes(areaIndex) {
+    const proj = projects[currentProjectIndex];
+    const area = proj.areas[areaIndex];
+    const list = document.getElementById('noteList');
+    list.innerHTML = '';
+
+    if (!area.notes || area.notes.length === 0) {
+        list.innerHTML = '<li>Ingen notater lagt inn.</li>';
+        return;
+    }
+
+    area.notes.forEach((note, i) => {
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="#" onclick="viewNote(${areaIndex}, ${i})">Notat ${i + 1}</a>`;
+        list.appendChild(li);
+    });
+}
 function openArea(areaIndex) {
     const proj = projects[currentProjectIndex];
     const area = proj.areas[areaIndex];
@@ -407,13 +424,21 @@ async function exportProjectToPDF() {
             doc.setFontSize(14);
             doc.text(`Område: ${area.name}`, 10, y);
             y += 8;
+            
+            if (area.notes && area.notes.length > 0) {
+    doc.setFontSize(11);
+    doc.text("Notater:", 10, y);
+    y += 6;
 
-            if (area.comment) {
-                doc.setFontSize(11);
-                const splitComment = doc.splitTextToSize(`Kommentar: ${area.comment}`, 180);
-                doc.text(splitComment, 10, y);
-                y += splitComment.length * 6;
-            }
+    area.notes.forEach((note, n) => {
+        const noteLabel = `Notat ${n + 1}:`;
+        const splitNote = doc.splitTextToSize(note, 180);
+        doc.text(noteLabel, 14, y);
+        y += 6;
+        doc.text(splitNote, 18, y);
+        y += splitNote.length * 6;
+    });
+}
 
             if (area.measurements && area.measurements.length > 0) {
                 doc.setFontSize(11);
@@ -536,5 +561,20 @@ function saveNote(areaIndex) {
     area.notes.push(text);
     localStorage.setItem('projects', JSON.stringify(projects));
     openArea(areaIndex);
+}
+function viewNote(areaIndex, noteIndex) {
+    const proj = projects[currentProjectIndex];
+    const area = proj.areas[areaIndex];
+    const note = area.notes[noteIndex];
+
+    const content = document.getElementById('content');
+    content.innerHTML = `
+        <div class="project-content">
+            <h3>Notat ${noteIndex + 1} – ${area.name}</h3>
+            <p style="white-space: pre-wrap; max-width:600px;">${note}</p>
+            <br>
+            <button onclick="openArea(${areaIndex})">Tilbake til område</button>
+        </div>
+    `;
 }
 window.onload = displayProjects;
