@@ -146,7 +146,8 @@ function displayAreaImages(areaIndex) {
         container.style.margin = '5px';
 
         const img = document.createElement('img');
-        img.src = src;
+       img.src = src;
+img.onclick = () => showImageModal(src);
         img.style.width = '80px';
         img.style.height = '80px';
         img.style.objectFit = 'cover';
@@ -456,5 +457,18 @@ async function exportImagesToZip() {
     const content = await zip.generateAsync({ type: "blob" });
     saveAs(content, `${proj.name.replace(/\s+/g, '_')}_bilder.zip`);
 }
+// Forstørret bildevisning
+function showImageModal(src) {
+    const modal = document.getElementById('imageModal');
+    const img = document.getElementById('modalImage');
+    img.src = src;
+    modal.style.display = 'flex';
 
+    // Klikk utenfor bildet lukker modal
+    modal.onclick = function (e) {
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    };
+}
 window.onload = displayProjects;
