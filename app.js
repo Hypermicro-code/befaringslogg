@@ -573,8 +573,34 @@ function viewNote(areaIndex, noteIndex) {
             <h3>Notat ${noteIndex + 1} – ${area.name}</h3>
             <p style="white-space: pre-wrap; max-width:600px;">${note}</p>
             <br>
+            <button onclick="editNote(${areaIndex}, ${noteIndex})">✏️ Rediger</button>
+            <button onclick="deleteNote(${areaIndex}, ${noteIndex})">🗑️ Slett</button>
+            <br><br>
             <button onclick="openArea(${areaIndex})">Tilbake til område</button>
         </div>
     `;
+}
+function editNote(areaIndex, noteIndex) {
+    const proj = projects[currentProjectIndex];
+    const area = proj.areas[areaIndex];
+    const currentNote = area.notes[noteIndex];
+
+    const newNote = prompt("Rediger notat:", currentNote);
+    if (newNote !== null && newNote.trim() !== "") {
+        area.notes[noteIndex] = newNote.trim();
+        localStorage.setItem('projects', JSON.stringify(projects));
+        viewNote(areaIndex, noteIndex);
+    }
+}
+
+function deleteNote(areaIndex, noteIndex) {
+    const confirmDelete = confirm("Er du sikker på at du vil slette dette notatet?");
+    if (!confirmDelete) return;
+
+    const proj = projects[currentProjectIndex];
+    const area = proj.areas[areaIndex];
+    area.notes.splice(noteIndex, 1);
+    localStorage.setItem('projects', JSON.stringify(projects));
+    openArea(areaIndex);
 }
 window.onload = displayProjects;
