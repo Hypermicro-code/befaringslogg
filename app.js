@@ -55,7 +55,9 @@ function openProject(index) {
             <ul id="areaList"></ul>
             <button onclick="addArea()">Legg til område</button>
             <button onclick="exportProjectToPDF()">Eksporter til PDF</button>
+            <button onclick="exportImagesToZip()">Last ned bilder som ZIP</button>
             <br><br>
+            
             <button onclick="goBack()">Tilbake</button>
         </div>
     `;
@@ -430,6 +432,29 @@ function loadImage(dataUrl) {
         img.onerror = reject;
         img.src = dataUrl;
     });
+}
+async function exportImagesToZip() {
+    const proj = projects[currentProjectIndex];
+    const zip = new JSZip();
+
+    if (!proj.areas || proj.areas.length === 0) {
+        alert("Ingen områder å eksportere bilder fra.");
+        return;
+    }
+
+    for (const area of proj.areas) {
+        const folder = zip.folder(area.name.replace(/\s+/g, "_"));
+        if (area.images && area.images.length > 0) {
+            for (let i = 0; i < area.images.length; i++) {
+                const base64 = area.images[i];
+                const imgData = base64.split(',')[1];
+                folder.file(`bilde_${i + 1}.jpg`, imgData, { base64: true });
+            }
+        }
+    }
+
+    const content = await zip.generateAsync({ type: "blob" });
+    saveAs(content, `${proj.name.replace(/\s+/g, '_')}_bilder.zip`);
 }
 
 window.onload = displayProjects;
