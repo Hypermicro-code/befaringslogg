@@ -583,14 +583,18 @@ function viewNote(areaIndex, noteIndex) {
 function editNote(areaIndex, noteIndex) {
     const proj = projects[currentProjectIndex];
     const area = proj.areas[areaIndex];
-    const currentNote = area.notes[noteIndex];
+    const note = area.notes[noteIndex];
 
-    const newNote = prompt("Rediger notat:", currentNote);
-    if (newNote !== null && newNote.trim() !== "") {
-        area.notes[noteIndex] = newNote.trim();
-        localStorage.setItem('projects', JSON.stringify(projects));
-        viewNote(areaIndex, noteIndex);
-    }
+    const content = document.getElementById('content');
+    content.innerHTML = `
+        <div class="project-content">
+            <h3>Rediger notat ${noteIndex + 1} – ${area.name}</h3>
+            <textarea id="editNoteInput" rows="12" style="width:90%; max-width:500px;">${note}</textarea>
+            <br><br>
+            <button onclick="saveEditedNote(${areaIndex}, ${noteIndex})">Lagre endringer</button>
+            <button onclick="viewNote(${areaIndex}, ${noteIndex})">Avbryt</button>
+        </div>
+    `;
 }
 
 function deleteNote(areaIndex, noteIndex) {
@@ -602,5 +606,19 @@ function deleteNote(areaIndex, noteIndex) {
     area.notes.splice(noteIndex, 1);
     localStorage.setItem('projects', JSON.stringify(projects));
     openArea(areaIndex);
+}
+function saveEditedNote(areaIndex, noteIndex) {
+    const newText = document.getElementById('editNoteInput').value.trim();
+    if (!newText) {
+        alert("Notatet kan ikke være tomt.");
+        return;
+    }
+
+    const proj = projects[currentProjectIndex];
+    const area = proj.areas[areaIndex];
+    area.notes[noteIndex] = newText;
+
+    localStorage.setItem('projects', JSON.stringify(projects));
+    viewNote(areaIndex, noteIndex);
 }
 window.onload = displayProjects;
