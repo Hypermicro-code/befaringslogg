@@ -191,7 +191,6 @@ function displayAreaNotes(areaIndex) {
         list.appendChild(li);
     });
 }
-displayAreaAudio(areaIndex);
 
 function openArea(areaIndex) {
     const proj = projects[currentProjectIndex];
