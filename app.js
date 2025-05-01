@@ -682,17 +682,24 @@ function saveNoteWithAudio(areaIndex) {
     if (!area.notes) area.notes = [];
     if (!area.audioNotes) area.audioNotes = [];
 
-    if (noteText) area.notes.push(noteText);
-
     const audio = document.getElementById('audioPreview');
     const audioBase64 = audio.dataset.base64;
+
+    if (noteText) {
+        area.notes.push(noteText);
+    }
+
     if (audioBase64) {
         area.audioNotes.push(audioBase64);
+    } else if (audio.style.display === 'block') {
+        alert("Lydopptaket er ikke klart enda. Vent et par sekunder før du lagrer.");
+        return;
     }
 
     localStorage.setItem('projects', JSON.stringify(projects));
     openArea(areaIndex);
 }
+
 function displayAreaAudio(areaIndex) {
     const proj = projects[currentProjectIndex];
     const area = proj.areas[areaIndex];
