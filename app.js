@@ -234,9 +234,9 @@ function openArea(areaIndex) {
     });
 
     displayAreaMeasurements(areaIndex);
-    displayAreaAudio(areaIndex);
     displayAreaImages(areaIndex);
     displayAreaNotes(areaIndex);
+    displayAreaAudio(areaIndex);
 }
 function addMeasurementToArea(areaIndex) {
     const description = prompt("Beskrivelse av måling:");
