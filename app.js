@@ -658,6 +658,7 @@ function startRecording() {
                     audio.dataset.base64 = reader.result;
                 };
                 reader.readAsDataURL(audioBlob);
+                console.log("Base64:", audio.dataset.base64);
             };
 
             mediaRecorder.start();
