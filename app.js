@@ -653,11 +653,11 @@ function startRecording() {
 
                 // Lagre base64-data i elementet
                 const reader = new FileReader();
-                reader.onloadend = () => {
-                    audio.dataset.base64 = reader.result;
+               reader.onloadend = () => {
+    audio.dataset.base64 = reader.result;
+    console.log("✅ Base64 ble satt:", reader.result.substring(0, 100) + "...")
                 };
                 reader.readAsDataURL(audioBlob);
-                console.log("Base64:", audio.dataset.base64);
             };
 
             mediaRecorder.start();
