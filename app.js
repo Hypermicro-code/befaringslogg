@@ -1,5 +1,8 @@
 let projects = JSON.parse(localStorage.getItem('projects')) || [];
 let currentProjectIndex = null;
+let mediaRecorder;
+let audioChunks = [];
+
 
 function createProject() {
     const name = prompt("Prosjektnavn:");
