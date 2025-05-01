@@ -1,5 +1,6 @@
 let projects = JSON.parse(localStorage.getItem('projects')) || [];
 let currentProjectIndex = null;
+
 let mediaRecorder;
 let audioChunks = [];
 
@@ -632,8 +633,6 @@ function saveEditedNote(areaIndex, noteIndex) {
     localStorage.setItem('projects', JSON.stringify(projects));
     viewNote(areaIndex, noteIndex);
 }
-let mediaRecorder;
-let audioChunks = [];
 
 function startRecording() {
     navigator.mediaDevices.getUserMedia({ audio: true })
