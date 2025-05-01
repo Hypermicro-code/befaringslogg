@@ -305,6 +305,8 @@ function openArea(areaIndex) {
     displayAreaMeasurements(areaIndex);
     displayAreaImages(areaIndex);
     displayAreaNotes(areaIndex);
+    displayAreaAudio(areaIndex);
+
 }
 function addMeasurement() {
     const description = prompt("Beskrivelse av måling:");
