@@ -234,6 +234,7 @@ function openArea(areaIndex) {
     });
 
     displayAreaMeasurements(areaIndex);
+    displayAreaAudio(areaIndex);
     displayAreaImages(areaIndex);
     displayAreaNotes(areaIndex);
 }
