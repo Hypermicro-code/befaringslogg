@@ -232,10 +232,11 @@ function openArea(areaIndex) {
         event.target.value = '';
     });
 
-    displayAreaMeasurements(areaIndex);
-    displayAreaImages(areaIndex);
-    displayAreaNotes(areaIndex);
-    displayAreaAudio(areaIndex);
+displayAreaMeasurements(areaIndex);
+displayAreaNotes(areaIndex);
+displayAreaAudio(areaIndex);
+displayAreaImages(areaIndex);
+
 }
 function addMeasurementToArea(areaIndex) {
     const description = prompt("Beskrivelse av måling:");
@@ -302,11 +303,10 @@ function openArea(areaIndex) {
         event.target.value = '';
     });
 
-    displayAreaMeasurements(areaIndex);
-    displayAreaImages(areaIndex);
-    displayAreaNotes(areaIndex);
-    displayAreaAudio(areaIndex);
-
+displayAreaMeasurements(areaIndex);
+displayAreaNotes(areaIndex);
+displayAreaAudio(areaIndex);    // ← Flyttes hit
+displayAreaImages(areaIndex);
 }
 function addMeasurement() {
     const description = prompt("Beskrivelse av måling:");
