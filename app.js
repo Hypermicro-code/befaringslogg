@@ -684,22 +684,26 @@ function saveNoteWithAudio(areaIndex) {
     if (!area.audioNotes) area.audioNotes = [];
 
     const audio = document.getElementById('audioPreview');
-    const audioBase64 = audio.dataset.base64;
 
-    if (noteText) {
-        area.notes.push(noteText);
-    }
+    setTimeout(() => {
+        const audioBase64 = audio.dataset.base64;
 
-    if (audioBase64) {
-        area.audioNotes.push(audioBase64);
-    } else if (audio.style.display === 'block') {
-        alert("Lydopptaket er ikke klart enda. Vent et par sekunder før du lagrer.");
-        return;
-    }
+        if (noteText) {
+            area.notes.push(noteText);
+        }
 
-    localStorage.setItem('projects', JSON.stringify(projects));
-    openArea(areaIndex);
+        if (audioBase64) {
+            area.audioNotes.push(audioBase64);
+        } else if (audio.style.display === 'block') {
+            alert("Lydopptaket er ikke klart enda. Vent noen sekunder etter stopp.");
+            return;
+        }
+
+        localStorage.setItem('projects', JSON.stringify(projects));
+        openArea(areaIndex);
+    }, 500); // 500 ms forsinkelse
 }
+
 
 function displayAreaAudio(areaIndex) {
     const proj = projects[currentProjectIndex];
