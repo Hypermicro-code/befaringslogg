@@ -187,6 +187,8 @@ function displayAreaNotes(areaIndex) {
         list.appendChild(li);
     });
 }
+displayAreaAudio(areaIndex);
+
 function openArea(areaIndex) {
     const proj = projects[currentProjectIndex];
     const area = proj.areas[areaIndex];
@@ -542,13 +544,19 @@ function openNoteEditor(areaIndex) {
     content.innerHTML = `
         <div class="project-content">
             <h3>Nytt notat</h3>
-            <textarea id="noteInput" rows="15" style="width:90%; max-width:500px;"></textarea>
+            <textarea id="noteInput" rows="10" style="width:90%; max-width:500px;"></textarea>
             <br><br>
-            <button onclick="saveNote(${areaIndex})">Lagre notat</button>
+            <button onclick="startRecording()">🎤 Start opptak</button>
+            <button onclick="stopRecording()">⏹️ Stopp opptak</button>
+            <p id="recordingStatus"></p>
+            <audio id="audioPreview" controls style="display:none; margin-top:10px;"></audio>
+            <br><br>
+            <button onclick="saveNoteWithAudio(${areaIndex})">Lagre notat</button>
             <button onclick="openArea(${areaIndex})">Avbryt</button>
         </div>
     `;
 }
+
 
 function saveNote(areaIndex) {
     const text = document.getElementById('noteInput').value.trim();
@@ -621,4 +629,86 @@ function saveEditedNote(areaIndex, noteIndex) {
     localStorage.setItem('projects', JSON.stringify(projects));
     viewNote(areaIndex, noteIndex);
 }
+let mediaRecorder;
+let audioChunks = [];
+
+function startRecording() {
+    navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(stream => {
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+
+            mediaRecorder.ondataavailable = e => {
+                audioChunks.push(e.data);
+            };
+
+            mediaRecorder.onstop = () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                const audioURL = URL.createObjectURL(audioBlob);
+                const audio = document.getElementById('audioPreview');
+                audio.src = audioURL;
+                audio.style.display = 'block';
+
+                // Lagre base64-data i elementet
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    audio.dataset.base64 = reader.result;
+                };
+                reader.readAsDataURL(audioBlob);
+            };
+
+            mediaRecorder.start();
+            document.getElementById('recordingStatus').textContent = '🎙️ Opptak pågår...';
+        })
+        .catch(err => {
+            alert('Kunne ikke starte opptak: ' + err);
+        });
+}
+
+function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        document.getElementById('recordingStatus').textContent = '✅ Opptak lagret.';
+    }
+}
+
+function saveNoteWithAudio(areaIndex) {
+    const noteText = document.getElementById('noteInput').value.trim();
+    const proj = projects[currentProjectIndex];
+    const area = proj.areas[areaIndex];
+    if (!area.notes) area.notes = [];
+    if (!area.audioNotes) area.audioNotes = [];
+
+    if (noteText) area.notes.push(noteText);
+
+    const audio = document.getElementById('audioPreview');
+    const audioBase64 = audio.dataset.base64;
+    if (audioBase64) {
+        area.audioNotes.push(audioBase64);
+    }
+
+    localStorage.setItem('projects', JSON.stringify(projects));
+    openArea(areaIndex);
+}
+function displayAreaAudio(areaIndex) {
+    const proj = projects[currentProjectIndex];
+    const area = proj.areas[areaIndex];
+    if (!area.audioNotes || area.audioNotes.length === 0) return;
+
+    const container = document.createElement('div');
+    container.innerHTML = '<h4>Lydnotater</h4>';
+
+    area.audioNotes.forEach((audioData, i) => {
+        const audio = document.createElement('audio');
+        audio.controls = true;
+        audio.src = audioData;
+        const label = document.createElement('p');
+        label.textContent = `Lyd ${i + 1}`;
+        container.appendChild(label);
+        container.appendChild(audio);
+    });
+
+    document.querySelector('.project-content').appendChild(container);
+}
+
 window.onload = displayProjects;
