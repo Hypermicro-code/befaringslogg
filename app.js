@@ -552,17 +552,23 @@ function openNoteEditor(areaIndex) {
             <h3>Nytt notat</h3>
             <textarea id="noteInput" rows="10" style="width:90%; max-width:500px;"></textarea>
             <br><br>
+            <button onclick="startDictation()">🗣️ Start diktering</button>
+            <button onclick="stopDictation()">🛑 Stopp diktering</button>
+            <p id="dictationStatus" style="color: green; font-weight: bold;"></p>
+
+            <hr style="margin:20px 0">
+
             <button onclick="startRecording()">🎤 Start opptak</button>
             <button onclick="stopRecording()">⏹️ Stopp opptak</button>
             <p id="recordingStatus"></p>
             <audio id="audioPreview" controls style="display:none; margin-top:10px;"></audio>
+
             <br><br>
             <button onclick="saveNoteWithAudio(${areaIndex})">Lagre notat</button>
             <button onclick="openArea(${areaIndex})">Avbryt</button>
         </div>
     `;
 }
-
 
 function saveNote(areaIndex) {
     const text = document.getElementById('noteInput').value.trim();
@@ -725,6 +731,47 @@ function displayAreaAudio(areaIndex) {
     });
 
     document.querySelector('.project-content').appendChild(container);
+}
+let recognition;
+function startDictation() {
+    const noteField = document.getElementById("noteInput");
+    const status = document.getElementById("dictationStatus");
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        alert("Talegjenkjenning støttes ikke i denne nettleseren.");
+        return;
+    }
+
+    recognition = new SpeechRecognition();
+    recognition.lang = "nb-NO"; // Norsk
+    recognition.interimResults = true;
+    recognition.continuous = true;
+
+    recognition.onresult = (event) => {
+        let finalTranscript = "";
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+            const transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+                finalTranscript += transcript + " ";
+            }
+        }
+        noteField.value += finalTranscript;
+    };
+
+    recognition.onstart = () => {
+        status.textContent = "🎙️ Lytter...";
+    };
+
+    recognition.onerror = (e) => {
+        status.textContent = "❌ Feil: " + e.error;
+    };
+
+    recognition.onend = () => {
+        status.textContent = "🛑 Diktering stoppet.";
+    };
+
+    recognition.start();
 }
 
 window.onload = displayProjects;
