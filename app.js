@@ -370,8 +370,8 @@ function updateHeader(project = null) {
         `;
     } else {
         header.innerHTML = `
-            <h1>Befaringslogg</h1>
-            <button onclick="createProject()">Nytt Prosjekt</button>
+           <h1>Befaringslogg</h1>
+           <button class="primary" onclick="createProject()">Nytt Prosjekt</button>
         `;
     }
 }
