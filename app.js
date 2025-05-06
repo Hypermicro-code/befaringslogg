@@ -218,19 +218,36 @@ function openArea(areaIndex) {
         </div>
     `;
 
-    document.getElementById('imageUpload').addEventListener('change', function(event) {
-        const files = Array.from(event.target.files);
-        files.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                area.images.push(e.target.result);
+document.getElementById('imageUpload').addEventListener('change', function(event) {
+    const files = Array.from(event.target.files);
+
+    function processFile(index) {
+        if (index >= files.length) {
+            localStorage.setItem('projects', JSON.stringify(projects));
+            displayAreaImages(areaIndex);
+            return;
+        }
+
+        const file = files[index];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            area.images.push(e.target.result);
+
+            const takeAnother = confirm("📸 Vil du ta et nytt bilde?");
+            if (takeAnother) {
+                // Åpne kamera på nytt
+                document.getElementById('imageUpload').click();
+            } else {
                 localStorage.setItem('projects', JSON.stringify(projects));
                 displayAreaImages(areaIndex);
-            };
-            reader.readAsDataURL(file);
-        });
-        event.target.value = '';
-    });
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+
+    processFile(0);
+    event.target.value = '';
+});
 
 displayAreaMeasurements(areaIndex);
 displayAreaNotes(areaIndex);
