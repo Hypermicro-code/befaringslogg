@@ -1,5 +1,6 @@
 let projects = JSON.parse(localStorage.getItem('projects')) || [];
 let currentProjectIndex = null;
+let recognition = null;
 
 let mediaRecorder;
 let audioChunks = [];
@@ -773,5 +774,10 @@ function startDictation() {
 
     recognition.start();
 }
-
+function stopDictation() {
+    if (recognition) {
+        recognition.stop();
+        document.getElementById("dictationStatus").textContent = "🛑 Diktering stoppet.";
+    }
+}
 window.onload = displayProjects;
