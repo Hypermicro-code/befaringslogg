@@ -259,7 +259,7 @@ function addMeasurementToArea(areaIndex) {
         alert("Kameramåling kommer snart! 📷 Vi jobber med saken.");
     }
 }
-}
+
 function addArea() {
     const name = prompt("Navn på område:");
     if (!name) return;
