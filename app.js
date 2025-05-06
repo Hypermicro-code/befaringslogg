@@ -1,6 +1,5 @@
 let projects = JSON.parse(localStorage.getItem('projects')) || [];
 let currentProjectIndex = null;
-let recognition = null;
 
 let mediaRecorder;
 let audioChunks = [];
