@@ -239,17 +239,26 @@ displayAreaImages(areaIndex);
 
 }
 function addMeasurementToArea(areaIndex) {
-    const description = prompt("Beskrivelse av måling:");
-    const value = prompt("Måleverdi i meter (f.eks. 5.75):");
+    const choice = confirm("Trykk OK for manuell måling, eller Avbryt for å bruke kamera.");
 
-    if (description && value) {
-        const proj = projects[currentProjectIndex];
-        const area = proj.areas[areaIndex];
+    if (choice) {
+        // Manuell måling
+        const description = prompt("Beskrivelse av måling:");
+        const value = prompt("Måleverdi i meter (f.eks. 5.75):");
 
-        area.measurements.push({ description, value: parseFloat(value).toFixed(2) });
-        localStorage.setItem('projects', JSON.stringify(projects));
-        displayAreaMeasurements(areaIndex);
+        if (description && value) {
+            const proj = projects[currentProjectIndex];
+            const area = proj.areas[areaIndex];
+
+            area.measurements.push({ description, value: parseFloat(value).toFixed(2) });
+            localStorage.setItem('projects', JSON.stringify(projects));
+            displayAreaMeasurements(areaIndex);
+        }
+    } else {
+        // Kamera-måling (midlertidig melding)
+        alert("Kameramåling kommer snart! 📷 Vi jobber med saken.");
     }
+}
 }
 function addArea() {
     const name = prompt("Navn på område:");
