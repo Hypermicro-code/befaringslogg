@@ -370,16 +370,34 @@ function deleteImage(areaIndex, imageIndex) {
     displayAreaImages(areaIndex);
 }
 
-function editArea(areaIndex) {
-    const proj = projects[currentProjectIndex];
-    const area = proj.areas[areaIndex];
+let currentAreaIndex = null;
 
-    const newName = prompt("Nytt navn for området:", area.name);
-    if (newName) {
-        area.name = newName;
-        localStorage.setItem('projects', JSON.stringify(projects));
-        displayAreas();
-    }
+function editArea(areaIndex) {
+  const proj = projects[currentProjectIndex];
+  const area = proj.areas[areaIndex];
+
+  currentAreaIndex = areaIndex;
+  document.getElementById("editAreaName").value = area.name;
+  document.getElementById("editAreaDialog").style.display = "flex";
+}
+
+function submitAreaEdit() {
+  const newName = document.getElementById("editAreaName").value.trim();
+  if (!newName) {
+    alert("Områdenavn er påkrevd.");
+    return;
+  }
+
+  const proj = projects[currentProjectIndex];
+  proj.areas[currentAreaIndex].name = newName;
+
+  localStorage.setItem('projects', JSON.stringify(projects));
+  closeEditAreaDialog();
+  displayAreas();
+}
+
+function closeEditAreaDialog() {
+  document.getElementById("editAreaDialog").style.display = "none";
 }
 
 function deleteArea(areaIndex) {
