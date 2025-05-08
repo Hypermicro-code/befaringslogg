@@ -221,25 +221,38 @@ function displayAreaNotes(areaIndex) {
 }
 
 function addMeasurementToArea(areaIndex) {
-    const choice = confirm("Trykk OK for manuell måling, eller Avbryt for å bruke kamera.");
+  const content = document.getElementById('content');
 
-    if (choice) {
-        // Manuell måling
-        const description = prompt("Beskrivelse av måling:");
-        const value = prompt("Måleverdi i meter (f.eks. 5.75):");
+  content.innerHTML = `
+    <div class="project-content">
+      <h3>Ny måling</h3>
+      <label for="descInput"><strong>Beskrivelse:</strong></label><br>
+      <input type="text" id="descInput" style="width: 90%; max-width: 400px;"><br><br>
 
-        if (description && value) {
-            const proj = projects[currentProjectIndex];
-            const area = proj.areas[areaIndex];
+      <label for="valInput"><strong>Verdi (i meter):</strong></label><br>
+      <input type="number" id="valInput" step="0.01" style="width: 90%; max-width: 400px;"><br><br>
 
-            area.measurements.push({ description, value: parseFloat(value).toFixed(2) });
-            localStorage.setItem('projects', JSON.stringify(projects));
-            displayAreaMeasurements(areaIndex);
-        }
-    } else {
-        // Kamera-måling (midlertidig melding)
-        alert("Kameramåling kommer snart! 📷 Vi jobber med saken.");
-    }
+      <button onclick="saveMeasurement(${areaIndex})">💾 Lagre</button>
+      <button onclick="openArea(${areaIndex})">Avbryt</button>
+    </div>
+  `;
+}
+
+function saveMeasurement(areaIndex) {
+  const description = document.getElementById('descInput').value.trim();
+  const value = parseFloat(document.getElementById('valInput').value);
+
+  if (!description || isNaN(value)) {
+    alert("Vennligst fyll ut både beskrivelse og gyldig måleverdi.");
+    return;
+  }
+
+  const proj = projects[currentProjectIndex];
+  const area = proj.areas[areaIndex];
+
+  area.measurements.push({ description, value: value.toFixed(2) });
+  localStorage.setItem('projects', JSON.stringify(projects));
+  openArea(areaIndex);
 }
 
 function addArea() {
