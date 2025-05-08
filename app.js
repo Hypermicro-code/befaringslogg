@@ -197,80 +197,63 @@ function openArea(areaIndex) {
     const area = proj.areas[areaIndex];
 
     const content = document.getElementById('content');
-content.innerHTML = `
-    document.getElementById('imageUpload').addEventListener('change', function(event) {
-    const files = Array.from(event.target.files);
-    files.forEach(file => {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            area.images.push(e.target.result);
-            localStorage.setItem('projects', JSON.stringify(projects));
-            displayAreaImages(areaIndex);
-        };
-        reader.readAsDataURL(file);
-    });
-    event.target.value = '';
-});
-    <div class="project-content">
-        <h3>${area.name}</h3>
+    content.innerHTML = `
+        <div class="project-content">
+            <h3>${area.name}</h3>
 
-        <div style="margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 8px;">
-            <button onclick="addMeasurementToArea(${areaIndex})">➕ Måling</button>
-            <button onclick="openNoteEditor(${areaIndex})">📝 Nytt notat</button>
-            <label style="display: inline-block;">
-                <input type="file" id="imageUpload" accept="image/*" multiple style="display: none;">
+            <div style="margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 8px;">
+                <button onclick="addMeasurementToArea(${areaIndex})">➕ Måling</button>
+                <button onclick="openNoteEditor(${areaIndex})">📝 Nytt notat</button>
                 <button onclick="document.getElementById('imageUpload').click()">📷 Velg filer</button>
-            </label>
-            <button onclick="openProject(${currentProjectIndex})">🔙 Tilbake</button>
+                <input type="file" id="imageUpload" accept="image/*" multiple style="display: none;">
+                <button onclick="openProject(${currentProjectIndex})">🔙 Tilbake</button>
+            </div>
+
+            <h4>Målelogg</h4>
+            <ul id="measurementList"></ul>
+
+            <h4>Notater</h4>
+            <ul id="noteList"></ul>
+
+            <h4>Bilder</h4>
+            <div id="imageGallery" style="margin-top:10px;"></div>
         </div>
+    `;
 
-        <h4>Målelogg</h4>
-        <ul id="measurementList"></ul>
+    document.getElementById('imageUpload').addEventListener('change', function(event) {
+        const files = Array.from(event.target.files);
 
-        <h4>Notater</h4>
-        <ul id="noteList"></ul>
-
-        <h4>Bilder</h4>
-        <div id="imageGallery" style="margin-top:10px;"></div>
-    </div>
-`;
-
-document.getElementById('imageUpload').addEventListener('change', function(event) {
-    const files = Array.from(event.target.files);
-
-    function processFile(index) {
-        if (index >= files.length) {
-            localStorage.setItem('projects', JSON.stringify(projects));
-            displayAreaImages(areaIndex);
-            return;
-        }
-
-        const file = files[index];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            area.images.push(e.target.result);
-
-            const takeAnother = confirm("📸 Vil du ta et nytt bilde?");
-            if (takeAnother) {
-                // Åpne kamera på nytt
-                document.getElementById('imageUpload').click();
-            } else {
+        function processFile(index) {
+            if (index >= files.length) {
                 localStorage.setItem('projects', JSON.stringify(projects));
                 displayAreaImages(areaIndex);
+                return;
             }
-        };
-        reader.readAsDataURL(file);
-    }
 
-    processFile(0);
-    event.target.value = '';
-});
+            const file = files[index];
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                area.images.push(e.target.result);
 
-displayAreaMeasurements(areaIndex);
-displayAreaNotes(areaIndex);
-displayAreaAudio(areaIndex);
-displayAreaImages(areaIndex);
+                const takeAnother = confirm("📸 Vil du ta et nytt bilde?");
+                if (takeAnother) {
+                    document.getElementById('imageUpload').click();
+                } else {
+                    localStorage.setItem('projects', JSON.stringify(projects));
+                    displayAreaImages(areaIndex);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
 
+        processFile(0);
+        event.target.value = '';
+    });
+
+    displayAreaMeasurements(areaIndex);
+    displayAreaNotes(areaIndex);
+    displayAreaAudio(areaIndex);
+    displayAreaImages(areaIndex);
 }
 function addMeasurementToArea(areaIndex) {
     const choice = confirm("Trykk OK for manuell måling, eller Avbryt for å bruke kamera.");
