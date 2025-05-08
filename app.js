@@ -171,7 +171,7 @@ function deleteMeasurement(areaIndex, measurementIndex) {
     <div class="project-content">
       <h3>Slett måling</h3>
       <p>Er du sikker på at du vil slette denne målingen?</p>
-      <blockquote>${measurement.description}: ${measurement.value} m</blockquote>
+      <p><strong>${measurement.description}: ${measurement.value} m</strong></p>
       <br>
       <button onclick="confirmDeleteMeasurement(${areaIndex}, ${measurementIndex})">🗑️ Slett</button>
       <button onclick="openArea(${areaIndex})">Avbryt</button>
@@ -179,6 +179,14 @@ function deleteMeasurement(areaIndex, measurementIndex) {
   `;
 }
 
+function confirmDeleteMeasurement(areaIndex, measurementIndex) {
+  const proj = projects[currentProjectIndex];
+  const area = proj.areas[areaIndex];
+  area.measurements.splice(measurementIndex, 1);
+
+  localStorage.setItem('projects', JSON.stringify(projects));
+  openArea(areaIndex);
+}
 function confirmDeleteMeasurement(areaIndex, measurementIndex) {
   const proj = projects[currentProjectIndex];
   const area = proj.areas[areaIndex];
