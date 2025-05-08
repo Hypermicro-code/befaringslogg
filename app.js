@@ -138,15 +138,29 @@ function editMeasurement(areaIndex, measurementIndex) {
 }
 
 function deleteMeasurement(areaIndex, measurementIndex) {
-    const confirmDelete = confirm("Er du sikker på at du vil slette denne målingen?");
-    if (!confirmDelete) return;
+  const proj = projects[currentProjectIndex];
+  const area = proj.areas[areaIndex];
+  const measurement = area.measurements[measurementIndex];
 
-    const proj = projects[currentProjectIndex];
-    const area = proj.areas[areaIndex];
-    area.measurements.splice(measurementIndex, 1);
+  const content = document.getElementById('content');
+  content.innerHTML = `
+    <div class="project-content">
+      <h3>Slett måling</h3>
+      <p>Er du sikker på at du vil slette denne målingen?</p>
+      <blockquote>${measurement.description}: ${measurement.value} m</blockquote>
+      <br>
+      <button onclick="confirmDeleteMeasurement(${areaIndex}, ${measurementIndex})">🗑️ Slett</button>
+      <button onclick="openArea(${areaIndex})">Avbryt</button>
+    </div>
+  `;
+}
 
-    localStorage.setItem('projects', JSON.stringify(projects));
-    displayAreaMeasurements(areaIndex);
+function confirmDeleteMeasurement(areaIndex, measurementIndex) {
+  const proj = projects[currentProjectIndex];
+  const area = proj.areas[areaIndex];
+  area.measurements.splice(measurementIndex, 1);
+  localStorage.setItem('projects', JSON.stringify(projects));
+  openArea(areaIndex);
 }
 
 function displayAreaImages(areaIndex) {
@@ -359,15 +373,29 @@ function updateHeader(project = null) {
 }
 
 function deleteImage(areaIndex, imageIndex) {
-    const confirmDelete = confirm("Er du sikker på at du vil slette dette bildet?");
-    if (!confirmDelete) return;
+  const proj = projects[currentProjectIndex];
+  const area = proj.areas[areaIndex];
 
-    const proj = projects[currentProjectIndex];
-    const area = proj.areas[areaIndex];
+  const content = document.getElementById('content');
+  content.innerHTML = `
+    <div class="project-content">
+      <h3>Slett bilde</h3>
+      <p>Er du sikker på at du vil slette dette bildet?</p>
+      <img src="${area.images[imageIndex]}" style="max-width: 200px; margin-top: 10px; border-radius: 8px;">
+      <br><br>
+      <button onclick="confirmDeleteImage(${areaIndex}, ${imageIndex})">🗑️ Slett</button>
+      <button onclick="openArea(${areaIndex})">Avbryt</button>
+    </div>
+  `;
+}
 
-    area.images.splice(imageIndex, 1);
-    localStorage.setItem('projects', JSON.stringify(projects));
-    displayAreaImages(areaIndex);
+function confirmDeleteImage(areaIndex, imageIndex) {
+  const proj = projects[currentProjectIndex];
+  const area = proj.areas[areaIndex];
+
+  area.images.splice(imageIndex, 1);
+  localStorage.setItem('projects', JSON.stringify(projects));
+  openArea(areaIndex);
 }
 
 let currentAreaIndex = null;
@@ -687,14 +715,29 @@ function editNote(areaIndex, noteIndex) {
 }
 
 function deleteNote(areaIndex, noteIndex) {
-    const confirmDelete = confirm("Er du sikker på at du vil slette dette notatet?");
-    if (!confirmDelete) return;
+  const proj = projects[currentProjectIndex];
+  const area = proj.areas[areaIndex];
+  const note = area.notes[noteIndex];
 
-    const proj = projects[currentProjectIndex];
-    const area = proj.areas[areaIndex];
-    area.notes.splice(noteIndex, 1);
-    localStorage.setItem('projects', JSON.stringify(projects));
-    openArea(areaIndex);
+  const content = document.getElementById('content');
+  content.innerHTML = `
+    <div class="project-content">
+      <h3>Slett notat</h3>
+      <p>Er du sikker på at du vil slette dette notatet?</p>
+      <blockquote>${note.substring(0, 100)}...</blockquote>
+      <br>
+      <button onclick="confirmDeleteNote(${areaIndex}, ${noteIndex})">🗑️ Slett</button>
+      <button onclick="viewNote(${areaIndex}, ${noteIndex})">Avbryt</button>
+    </div>
+  `;
+}
+
+function confirmDeleteNote(areaIndex, noteIndex) {
+  const proj = projects[currentProjectIndex];
+  const area = proj.areas[areaIndex];
+  area.notes.splice(noteIndex, 1);
+  localStorage.setItem('projects', JSON.stringify(projects));
+  openArea(areaIndex);
 }
 function saveEditedNote(areaIndex, noteIndex) {
     const newText = document.getElementById('editNoteInput').value.trim();
