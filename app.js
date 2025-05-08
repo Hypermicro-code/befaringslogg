@@ -26,7 +26,7 @@ function displayProjects() {
     projects.forEach((proj, index) => {
         const li = document.createElement('li');
         li.innerHTML = `
-            ${proj.name} - ${proj.date}
+            ${proj.name}
             <button onclick="openProject(${index})">Åpne</button>
             <button onclick="editProject(${index})">✏️</button>
             <button onclick="deleteProject(${index})">🗑️</button>
@@ -52,19 +52,19 @@ function openProject(index) {
     updateHeader(proj);
 
     const content = document.getElementById('content');
-    content.innerHTML = `
-        <div class="project-content">
-            <p><strong>Info:</strong> ${proj.info}</p>
-            <h3>Områder</h3>
-            <ul id="areaList"></ul>
-            <button onclick="addArea()">Legg til område</button>
-            <button onclick="exportProjectToPDF()">Eksporter til PDF</button>
-            <button onclick="exportImagesToZip()">Last ned bilder som ZIP</button>
-            <br><br>
-            
-            <button onclick="goBack()">Tilbake</button>
+content.innerHTML = `
+    <div class="project-content">
+        <div style="margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 8px;">
+            <button onclick="addArea()">➕ Legg til område</button>
+            <button onclick="exportProjectToPDF()">📄 Eksporter PDF</button>
+            <button onclick="exportImagesToZip()">🗂️ Bilder ZIP</button>
+            <button onclick="goBack()">🔙 Tilbake</button>
         </div>
-    `;
+        <p><strong>Info:</strong> ${proj.info}</p>
+        <h3>Områder</h3>
+        <ul id="areaList"></ul>
+    </div>
+`;
 
     displayAreas();
 }
