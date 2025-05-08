@@ -198,14 +198,27 @@ function openArea(areaIndex) {
 
     const content = document.getElementById('content');
 content.innerHTML = `
+    document.getElementById('imageUpload').addEventListener('change', function(event) {
+    const files = Array.from(event.target.files);
+    files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            area.images.push(e.target.result);
+            localStorage.setItem('projects', JSON.stringify(projects));
+            displayAreaImages(areaIndex);
+        };
+        reader.readAsDataURL(file);
+    });
+    event.target.value = '';
+});
     <div class="project-content">
         <h3>${area.name}</h3>
 
         <div style="margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 8px;">
             <button onclick="addMeasurementToArea(${areaIndex})">➕ Måling</button>
-            <button onclick="openNoteEditor(${areaIndex})">📝 Notat</button>
-            <label style="display:inline-block;">
-                <input type="file" id="imageUpload" accept="image/*" multiple style="display:none;">
+            <button onclick="openNoteEditor(${areaIndex})">📝 Nytt notat</button>
+            <label style="display: inline-block;">
+                <input type="file" id="imageUpload" accept="image/*" multiple style="display: none;">
                 <button onclick="document.getElementById('imageUpload').click()">📷 Velg filer</button>
             </label>
             <button onclick="openProject(${currentProjectIndex})">🔙 Tilbake</button>
