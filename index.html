@@ -44,5 +44,19 @@
     <button onclick="closeProjectDialog()">Avbryt</button>
   </div>
 </div>
+    <!-- Rediger prosjekt dialog -->
+<div id="editProjectDialog" class="dialog-overlay" style="display:none;">
+  <div class="dialog-box">
+    <h3>Rediger prosjekt</h3>
+    <label>Prosjektnavn:</label>
+    <input type="text" id="editProjectName"><br>
+    <label>Dato for befaring:</label>
+    <input type="date" id="editProjectDate"><br>
+    <label>Generelle opplysninger:</label>
+    <textarea id="editProjectInfo" rows="3"></textarea><br><br>
+    <button onclick="submitProjectEdit()">Lagre</button>
+    <button onclick="closeEditProjectDialog()">Avbryt</button>
+  </div>
+</div>
 </body>
 </html>
