@@ -237,8 +237,8 @@ function openArea(areaIndex) {
 
             <div style="margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 8px;">
                 <button onclick="addMeasurementToArea(${areaIndex})">➕ Måling</button>
-                <button onclick="openNoteEditor(${areaIndex})">📝 Nytt notat</button>
-                <button onclick="document.getElementById('imageUpload').click()">📷 Velg filer</button>
+                <button onclick="openNoteEditor(${areaIndex})">📝 Notat</button>
+                <button onclick="document.getElementById('imageUpload').click()">📷 Bilde</button>
                 <input type="file" id="imageUpload" accept="image/*" multiple style="display: none;">
                 <button onclick="openProject(${currentProjectIndex})">🔙 Tilbake</button>
             </div>
