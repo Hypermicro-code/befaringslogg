@@ -55,9 +55,9 @@ function openProject(index) {
 content.innerHTML = `
     <div class="project-content">
         <div style="margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 8px;">
-            <button onclick="addArea()">➕ Legg til område</button>
-            <button onclick="exportProjectToPDF()">📄 Eksporter PDF</button>
-            <button onclick="exportImagesToZip()">🗂️ Bilder ZIP</button>
+            <button onclick="addArea()">➕ område</button>
+            <button onclick="exportProjectToPDF()">📄 PDF</button>
+            <button onclick="exportImagesToZip()">🗂️ ZIP bilder</button>
             <button onclick="goBack()">🔙 Tilbake</button>
         </div>
         <p><strong>Info:</strong> ${proj.info}</p>
@@ -197,26 +197,30 @@ function openArea(areaIndex) {
     const area = proj.areas[areaIndex];
 
     const content = document.getElementById('content');
-    content.innerHTML = `
-        <div class="project-content">
-            <h3>${area.name}</h3>
+content.innerHTML = `
+    <div class="project-content">
+        <h3>${area.name}</h3>
 
-            <h4>Målelogg</h4>
-            <ul id="measurementList"></ul>
-            <button onclick="addMeasurementToArea(${areaIndex})">Legg til måling</button>
-
-            <h4>Notater</h4>
-            <button onclick="openNoteEditor(${areaIndex})">Nytt notat</button>
-            <ul id="noteList"></ul>
-
-            <h4>Bilder</h4>
-            <input type="file" id="imageUpload" accept="image/*" multiple>
-            <div id="imageGallery" style="margin-top:10px;"></div>
-
-            <br><br>
-            <button onclick="openProject(${currentProjectIndex})">Tilbake til prosjekt</button>
+        <div style="margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 8px;">
+            <button onclick="addMeasurementToArea(${areaIndex})">➕ Måling</button>
+            <button onclick="openNoteEditor(${areaIndex})">📝 Notat</button>
+            <label style="display:inline-block;">
+                <input type="file" id="imageUpload" accept="image/*" multiple style="display:none;">
+                <button onclick="document.getElementById('imageUpload').click()">📷 Velg filer</button>
+            </label>
+            <button onclick="openProject(${currentProjectIndex})">🔙 Tilbake</button>
         </div>
-    `;
+
+        <h4>Målelogg</h4>
+        <ul id="measurementList"></ul>
+
+        <h4>Notater</h4>
+        <ul id="noteList"></ul>
+
+        <h4>Bilder</h4>
+        <div id="imageGallery" style="margin-top:10px;"></div>
+    </div>
+`;
 
 document.getElementById('imageUpload').addEventListener('change', function(event) {
     const files = Array.from(event.target.files);
