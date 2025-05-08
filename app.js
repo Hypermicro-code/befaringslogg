@@ -402,14 +402,25 @@ function closeEditAreaDialog() {
 
 function deleteArea(areaIndex) {
   const proj = projects[currentProjectIndex];
-  const areaName = proj.areas[areaIndex].name;
+  const area = proj.areas[areaIndex];
 
-  const confirmed = confirm(`Vil du slette området "${areaName}"?`);
-  if (!confirmed) return;
+  const content = document.getElementById('content');
+  content.innerHTML = `
+    <div class="project-content">
+      <h3>Slett område</h3>
+      <p>Er du sikker på at du vil slette området <strong>"${area.name}"</strong>?</p>
+      <br>
+      <button onclick="confirmDeleteArea(${areaIndex})">🗑️ Slett</button>
+      <button onclick="openProject(${currentProjectIndex})">Avbryt</button>
+    </div>
+  `;
+}
 
+function confirmDeleteArea(areaIndex) {
+  const proj = projects[currentProjectIndex];
   proj.areas.splice(areaIndex, 1);
   localStorage.setItem('projects', JSON.stringify(projects));
-  displayAreas();
+  openProject(currentProjectIndex);
 }
 function editProject(projectIndex) {
   const proj = projects[projectIndex];
@@ -449,9 +460,19 @@ function closeEditProjectDialog() {
 function deleteProject(projectIndex) {
   const proj = projects[projectIndex];
 
-  const confirmed = confirm(`Vil du slette prosjektet "${proj.name}"?`);
-  if (!confirmed) return;
+  const content = document.getElementById('content');
+  content.innerHTML = `
+    <div class="project-content">
+      <h3>Slett prosjekt</h3>
+      <p>Er du sikker på at du vil slette prosjektet <strong>"${proj.name}"</strong>?</p>
+      <br>
+      <button onclick="confirmDeleteProject(${projectIndex})">🗑️ Slett</button>
+      <button onclick="displayProjects()">Avbryt</button>
+    </div>
+  `;
+}
 
+function confirmDeleteProject(projectIndex) {
   projects.splice(projectIndex, 1);
   localStorage.setItem('projects', JSON.stringify(projects));
   displayProjects();
