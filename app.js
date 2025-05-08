@@ -57,7 +57,7 @@ content.innerHTML = `
         <div style="margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 8px;">
             <button onclick="addArea()">➕ område</button>
             <button onclick="exportProjectToPDF()">📄 PDF</button>
-            <button onclick="exportImagesToZip()">🗂️ ZIP bilder</button>
+            <button onclick="exportImagesToZip()">🗂️ Bilder</button>
             <button onclick="goBack()">🔙 Tilbake</button>
         </div>
         <p><strong>Info:</strong> ${proj.info}</p>
