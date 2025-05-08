@@ -201,13 +201,13 @@ function openArea(areaIndex) {
         <div class="project-content">
             <h3>${area.name}</h3>
 
-            <div style="margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 8px;">
-                <button onclick="addMeasurementToArea(${areaIndex})">➕ Måling</button>
-                <button onclick="openNoteEditor(${areaIndex})">📝 Nytt notat</button>
-                <button onclick="document.getElementById('imageUpload').click()">📷 Velg filer</button>
-                <input type="file" id="imageUpload" accept="image/*" multiple style="display: none;">
-                <button onclick="openProject(${currentProjectIndex})">🔙 Tilbake</button>
-            </div>
+           <div style="margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+    <button onclick="addMeasurementToArea(${areaIndex})">➕ Måling</button>
+    <button onclick="openNoteEditor(${areaIndex})">📝 Nytt notat</button>
+    <button onclick="document.getElementById('imageUpload').click()">📷 Velg filer</button>
+    <input type="file" id="imageUpload" accept="image/*" multiple style="display: none;">
+    <button onclick="openProject(${currentProjectIndex})">🔙 Tilbake</button>
+</div>
 
             <h4>Målelogg</h4>
             <ul id="measurementList"></ul>
