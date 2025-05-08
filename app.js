@@ -6,17 +6,31 @@ let audioChunks = [];
 
 
 function createProject() {
-    const name = prompt("Prosjektnavn:");
-    const today = new Date().toISOString().split('T')[0];  // yyyy-mm-dd
-    const date = prompt("Dato for befaring (åååå-mm-dd):", today);
-    const info = prompt("Generelle opplysninger:");
+  document.getElementById("projectNameInput").value = "";
+  document.getElementById("projectDateInput").value = new Date().toISOString().split('T')[0];
+  document.getElementById("projectInfoInput").value = "";
+  document.getElementById("projectDialog").style.display = "flex";
+}
 
-    if (name) {
-        const project = { name, date, info, measurements: [], images: [] };
-        projects.push(project);
-        localStorage.setItem('projects', JSON.stringify(projects));
-        displayProjects();
-    }
+function submitProject() {
+  const name = document.getElementById("projectNameInput").value.trim();
+  const date = document.getElementById("projectDateInput").value;
+  const info = document.getElementById("projectInfoInput").value.trim();
+
+  if (!name) {
+    alert("Prosjektnavn er påkrevd.");
+    return;
+  }
+
+  const project = { name, date, info, measurements: [], images: [] };
+  projects.push(project);
+  localStorage.setItem('projects', JSON.stringify(projects));
+  closeProjectDialog();
+  displayProjects();
+}
+
+function closeProjectDialog() {
+  document.getElementById("projectDialog").style.display = "none";
 }
 
 function displayProjects() {
