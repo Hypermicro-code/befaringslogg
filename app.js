@@ -122,21 +122,45 @@ function displayAreas() {
 }
 
 function editMeasurement(areaIndex, measurementIndex) {
-    const proj = projects[currentProjectIndex];
-    const area = proj.areas[areaIndex];
-    const measurement = area.measurements[measurementIndex];
+  const proj = projects[currentProjectIndex];
+  const area = proj.areas[areaIndex];
+  const measurement = area.measurements[measurementIndex];
 
-    const newDescription = prompt("Ny beskrivelse:", measurement.description);
-    const newValue = prompt("Ny måleverdi (i meter):", measurement.value);
+  const content = document.getElementById('content');
+  content.innerHTML = `
+    <div class="project-content">
+      <h3>Rediger måling</h3>
+      <label for="editDesc"><strong>Beskrivelse:</strong></label><br>
+      <input type="text" id="editDesc" value="${measurement.description}" style="width: 90%; max-width: 400px;"><br><br>
 
-    if (newDescription && newValue) {
-        measurement.description = newDescription;
-        measurement.value = parseFloat(newValue).toFixed(2);
-        localStorage.setItem('projects', JSON.stringify(projects));
-        displayAreaMeasurements(areaIndex);
-    }
+      <label for="editValue"><strong>Verdi (i meter):</strong></label><br>
+      <input type="number" id="editValue" step="0.01" value="${measurement.value}" style="width: 90%; max-width: 400px;"><br><br>
+
+      <button onclick="saveEditedMeasurement(${areaIndex}, ${measurementIndex})">💾 Lagre</button>
+      <button onclick="openArea(${areaIndex})">Avbryt</button>
+    </div>
+  `;
 }
 
+function saveEditedMeasurement(areaIndex, measurementIndex) {
+  const newDescription = document.getElementById('editDesc').value.trim();
+  const newValue = parseFloat(document.getElementById('editValue').value);
+
+  if (!newDescription || isNaN(newValue)) {
+    alert("Vennligst fyll ut både beskrivelse og gyldig måleverdi.");
+    return;
+  }
+
+  const proj = projects[currentProjectIndex];
+  const area = proj.areas[areaIndex];
+  const measurement = area.measurements[measurementIndex];
+
+  measurement.description = newDescription;
+  measurement.value = newValue.toFixed(2);
+
+  localStorage.setItem('projects', JSON.stringify(projects));
+  openArea(areaIndex);
+}
 function deleteMeasurement(areaIndex, measurementIndex) {
   const proj = projects[currentProjectIndex];
   const area = proj.areas[areaIndex];
