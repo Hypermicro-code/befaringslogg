@@ -401,14 +401,15 @@ function closeEditAreaDialog() {
 }
 
 function deleteArea(areaIndex) {
-    const confirmDelete = confirm("Er du sikker på at du vil slette dette området?");
-    if (!confirmDelete) return;
+  const proj = projects[currentProjectIndex];
+  const areaName = proj.areas[areaIndex].name;
 
-    const proj = projects[currentProjectIndex];
-    proj.areas.splice(areaIndex, 1);
+  const confirmed = confirm(`Vil du slette området "${areaName}"?`);
+  if (!confirmed) return;
 
-    localStorage.setItem('projects', JSON.stringify(projects));
-    displayAreas();
+  proj.areas.splice(areaIndex, 1);
+  localStorage.setItem('projects', JSON.stringify(projects));
+  displayAreas();
 }
 function editProject(projectIndex) {
   const proj = projects[projectIndex];
@@ -446,12 +447,14 @@ function closeEditProjectDialog() {
 }
 
 function deleteProject(projectIndex) {
-    const confirmDelete = confirm("Er du sikker på at du vil slette dette prosjektet?");
-    if (!confirmDelete) return;
+  const proj = projects[projectIndex];
 
-    projects.splice(projectIndex, 1);
-    localStorage.setItem('projects', JSON.stringify(projects));
-    displayProjects();
+  const confirmed = confirm(`Vil du slette prosjektet "${proj.name}"?`);
+  if (!confirmed) return;
+
+  projects.splice(projectIndex, 1);
+  localStorage.setItem('projects', JSON.stringify(projects));
+  displayProjects();
 }
 async function exportProjectToPDF() {
     const proj = projects[currentProjectIndex];
