@@ -192,6 +192,40 @@ function displayAreaNotes(areaIndex) {
     });
 }
 
+function addMeasurementToArea(areaIndex) {
+    const choice = confirm("Trykk OK for manuell måling, eller Avbryt for å bruke kamera.");
+
+    if (choice) {
+        // Manuell måling
+        const description = prompt("Beskrivelse av måling:");
+        const value = prompt("Måleverdi i meter (f.eks. 5.75):");
+
+        if (description && value) {
+            const proj = projects[currentProjectIndex];
+            const area = proj.areas[areaIndex];
+
+            area.measurements.push({ description, value: parseFloat(value).toFixed(2) });
+            localStorage.setItem('projects', JSON.stringify(projects));
+            displayAreaMeasurements(areaIndex);
+        }
+    } else {
+        // Kamera-måling (midlertidig melding)
+        alert("Kameramåling kommer snart! 📷 Vi jobber med saken.");
+    }
+}
+
+function addArea() {
+    const name = prompt("Navn på område:");
+    if (!name) return;
+
+    const proj = projects[currentProjectIndex];
+    if (!proj.areas) proj.areas = [];
+
+    proj.areas.push({ name, measurements: [], comment: "", images: [] });
+    localStorage.setItem('projects', JSON.stringify(projects));
+    displayAreas();
+}
+
 function openArea(areaIndex) {
     const proj = projects[currentProjectIndex];
     const area = proj.areas[areaIndex];
@@ -201,13 +235,13 @@ function openArea(areaIndex) {
         <div class="project-content">
             <h3>${area.name}</h3>
 
-           <div style="margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
-    <button onclick="addMeasurementToArea(${areaIndex})">➕ Måling</button>
-    <button onclick="openNoteEditor(${areaIndex})">📝 Nytt notat</button>
-    <button onclick="document.getElementById('imageUpload').click()">📷 Velg filer</button>
-    <input type="file" id="imageUpload" accept="image/*" multiple style="display: none;">
-    <button onclick="openProject(${currentProjectIndex})">🔙 Tilbake</button>
-</div>
+            <div style="margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 8px;">
+                <button onclick="addMeasurementToArea(${areaIndex})">➕ Måling</button>
+                <button onclick="openNoteEditor(${areaIndex})">📝 Nytt notat</button>
+                <button onclick="document.getElementById('imageUpload').click()">📷 Velg filer</button>
+                <input type="file" id="imageUpload" accept="image/*" multiple style="display: none;">
+                <button onclick="openProject(${currentProjectIndex})">🔙 Tilbake</button>
+            </div>
 
             <h4>Målelogg</h4>
             <ul id="measurementList"></ul>
@@ -254,85 +288,6 @@ function openArea(areaIndex) {
     displayAreaNotes(areaIndex);
     displayAreaAudio(areaIndex);
     displayAreaImages(areaIndex);
-}
-function addMeasurementToArea(areaIndex) {
-    const choice = confirm("Trykk OK for manuell måling, eller Avbryt for å bruke kamera.");
-
-    if (choice) {
-        // Manuell måling
-        const description = prompt("Beskrivelse av måling:");
-        const value = prompt("Måleverdi i meter (f.eks. 5.75):");
-
-        if (description && value) {
-            const proj = projects[currentProjectIndex];
-            const area = proj.areas[areaIndex];
-
-            area.measurements.push({ description, value: parseFloat(value).toFixed(2) });
-            localStorage.setItem('projects', JSON.stringify(projects));
-            displayAreaMeasurements(areaIndex);
-        }
-    } else {
-        // Kamera-måling (midlertidig melding)
-        alert("Kameramåling kommer snart! 📷 Vi jobber med saken.");
-    }
-}
-
-function addArea() {
-    const name = prompt("Navn på område:");
-    if (!name) return;
-
-    const proj = projects[currentProjectIndex];
-    if (!proj.areas) proj.areas = [];
-
-    proj.areas.push({ name, measurements: [], comment: "", images: [] });
-    localStorage.setItem('projects', JSON.stringify(projects));
-    displayAreas();
-}
-
-function openArea(areaIndex) {
-    const proj = projects[currentProjectIndex];
-    const area = proj.areas[areaIndex];
-
-    const content = document.getElementById('content');
-    content.innerHTML = `
-        <div class="project-content">
-            <h3>${area.name}</h3>
-
-            <h4>Målelogg</h4>
-            <ul id="measurementList"></ul>
-            <button onclick="addMeasurementToArea(${areaIndex})">Legg til måling</button>
-
-            <h4>Notater</h4>
-            <button onclick="openNoteEditor(${areaIndex})">Nytt notat</button>
-            <ul id="noteList"></ul>
-
-            <h4>Bilder</h4>
-            <input type="file" id="imageUpload" accept="image/*" multiple>
-            <div id="imageGallery" style="margin-top:10px;"></div>
-
-            <br><br>
-            <button onclick="openProject(${currentProjectIndex})">Tilbake til prosjekt</button>
-        </div>
-    `;
-
-    document.getElementById('imageUpload').addEventListener('change', function(event) {
-        const files = Array.from(event.target.files);
-        files.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                area.images.push(e.target.result);
-                localStorage.setItem('projects', JSON.stringify(projects));
-                displayAreaImages(areaIndex);
-            };
-            reader.readAsDataURL(file);
-        });
-        event.target.value = '';
-    });
-
-displayAreaMeasurements(areaIndex);
-displayAreaNotes(areaIndex);
-displayAreaAudio(areaIndex);    // ← Flyttes hit
-displayAreaImages(areaIndex);
 }
 function addMeasurement() {
     const description = prompt("Beskrivelse av måling:");
