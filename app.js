@@ -229,15 +229,28 @@ function addMeasurementToArea(areaIndex) {
 }
 
 function addArea() {
-    const name = prompt("Navn på område:");
-    if (!name) return;
+  document.getElementById("areaNameInput").value = "";
+  document.getElementById("areaDialog").style.display = "flex";
+}
 
-    const proj = projects[currentProjectIndex];
-    if (!proj.areas) proj.areas = [];
+function submitArea() {
+  const name = document.getElementById("areaNameInput").value.trim();
+  if (!name) {
+    alert("Områdenavn er påkrevd.");
+    return;
+  }
 
-    proj.areas.push({ name, measurements: [], comment: "", images: [] });
-    localStorage.setItem('projects', JSON.stringify(projects));
-    displayAreas();
+  const proj = projects[currentProjectIndex];
+  if (!proj.areas) proj.areas = [];
+
+  proj.areas.push({ name, measurements: [], comment: "", images: [] });
+  localStorage.setItem('projects', JSON.stringify(projects));
+  closeAreaDialog();
+  displayAreas();
+}
+
+function closeAreaDialog() {
+  document.getElementById("areaDialog").style.display = "none";
 }
 
 function openArea(areaIndex) {
@@ -380,19 +393,38 @@ function deleteArea(areaIndex) {
     displayAreas();
 }
 function editProject(projectIndex) {
-    const proj = projects[projectIndex];
+  const proj = projects[projectIndex];
+  currentProjectIndex = projectIndex;
 
-    const newName = prompt("Nytt prosjektnavn:", proj.name);
-    const newDate = prompt("Ny dato (f.eks. 2025-06-01):", proj.date);
-    const newInfo = prompt("Ny info:", proj.info);
+  document.getElementById("editProjectName").value = proj.name;
+  document.getElementById("editProjectDate").value = proj.date;
+  document.getElementById("editProjectInfo").value = proj.info;
 
-    if (newName && newDate && newInfo) {
-        proj.name = newName;
-        proj.date = newDate;
-        proj.info = newInfo;
-        localStorage.setItem('projects', JSON.stringify(projects));
-        displayProjects();
-    }
+  document.getElementById("editProjectDialog").style.display = "flex";
+}
+
+function submitProjectEdit() {
+  const name = document.getElementById("editProjectName").value.trim();
+  const date = document.getElementById("editProjectDate").value;
+  const info = document.getElementById("editProjectInfo").value.trim();
+
+  if (!name) {
+    alert("Prosjektnavn er påkrevd.");
+    return;
+  }
+
+  const proj = projects[currentProjectIndex];
+  proj.name = name;
+  proj.date = date;
+  proj.info = info;
+
+  localStorage.setItem('projects', JSON.stringify(projects));
+  closeEditProjectDialog();
+  displayProjects();
+}
+
+function closeEditProjectDialog() {
+  document.getElementById("editProjectDialog").style.display = "none";
 }
 
 function deleteProject(projectIndex) {
