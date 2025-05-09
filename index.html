@@ -78,5 +78,25 @@
     <button onclick="closeEditAreaDialog()">Avbryt</button>
   </div>
 </div>
+    <!-- Dialog for valg av bildekilde -->
+<div id="imageSourceDialog" class="dialog-overlay" style="display:none;">
+  <div class="dialog-box">
+    <h3>Legg til bilde</h3>
+    <p>Velg hvordan du vil legge til bildet:</p>
+    <button onclick="startImageUpload('camera')">📷 Bruk kamera</button>
+    <button onclick="startImageUpload('file')">🖼️ Velg fra galleri</button>
+    <button onclick="closeImageSourceDialog()">Avbryt</button>
+  </div>
+</div>
+
+<!-- Dialog etter opplasting -->
+<div id="continueUploadDialog" class="dialog-overlay" style="display:none;">
+  <div class="dialog-box">
+    <h3>Bilde lagret ✅</h3>
+    <p>Vil du legge til et nytt bilde?</p>
+    <button onclick="continueImageUpload()">➕ Ja</button>
+    <button onclick="closeContinueUpload()">Ferdig</button>
+  </div>
+</div>
 </body>
 </html>
