@@ -1,4 +1,4 @@
-let projects = JSON.parse(localStorage.getItem('projects')) || [];
+let projects = [];
 let currentProjectIndex = null;
 
 let mediaRecorder;
@@ -24,7 +24,7 @@ function submitProject() {
 
   const project = { name, date, info, measurements: [], images: [] };
   projects.push(project);
-  localStorage.setItem('projects', JSON.stringify(projects));
+ set(ref(db, 'projects'), projects);
   closeProjectDialog();
   displayProjects();
 }
@@ -158,7 +158,7 @@ function saveEditedMeasurement(areaIndex, measurementIndex) {
   measurement.description = newDescription;
   measurement.value = newValue.toFixed(2);
 
-  localStorage.setItem('projects', JSON.stringify(projects));
+  set(ref(db, 'projects'), projects);
   openArea(areaIndex);
 }
 function deleteMeasurement(areaIndex, measurementIndex) {
@@ -184,14 +184,14 @@ function confirmDeleteMeasurement(areaIndex, measurementIndex) {
   const area = proj.areas[areaIndex];
   area.measurements.splice(measurementIndex, 1);
 
-  localStorage.setItem('projects', JSON.stringify(projects));
+set(ref(db, 'projects'), projects);
   openArea(areaIndex);
 }
 function confirmDeleteMeasurement(areaIndex, measurementIndex) {
   const proj = projects[currentProjectIndex];
   const area = proj.areas[areaIndex];
   area.measurements.splice(measurementIndex, 1);
-  localStorage.setItem('projects', JSON.stringify(projects));
+ set(ref(db, 'projects'), projects);
   openArea(areaIndex);
 }
 
@@ -283,7 +283,7 @@ function saveMeasurement(areaIndex) {
   const area = proj.areas[areaIndex];
 
   area.measurements.push({ description, value: value.toFixed(2) });
-  localStorage.setItem('projects', JSON.stringify(projects));
+ set(ref(db, 'projects'), projects);
   openArea(areaIndex);
 }
 
@@ -303,7 +303,7 @@ function submitArea() {
   if (!proj.areas) proj.areas = [];
 
   proj.areas.push({ name, measurements: [], comment: "", images: [] });
-  localStorage.setItem('projects', JSON.stringify(projects));
+  set(ref(db, 'projects'), projects);
   closeAreaDialog();
   displayAreas();
 }
@@ -345,7 +345,7 @@ function openArea(areaIndex) {
 
         function processFile(index) {
             if (index >= files.length) {
-                localStorage.setItem('projects', JSON.stringify(projects));
+               set(ref(db, 'projects'), projects);
                 displayAreaImages(areaIndex);
                 return;
             }
@@ -359,7 +359,7 @@ function openArea(areaIndex) {
                 if (takeAnother) {
                     document.getElementById('imageUpload').click();
                 } else {
-                    localStorage.setItem('projects', JSON.stringify(projects));
+                    set(ref(db, 'projects'), projects);
                     displayAreaImages(areaIndex);
                 }
             };
@@ -382,7 +382,7 @@ function addMeasurement() {
     if (description && value) {
         const proj = projects[currentProjectIndex];
         proj.measurements.push({ description, value: parseFloat(value).toFixed(2) });
-        localStorage.setItem('projects', JSON.stringify(projects));
+        set(ref(db, 'projects'), projects);
         displayMeasurements();
     }
 }
@@ -447,7 +447,7 @@ function startImageUpload(source) {
       const area = proj.areas[currentAreaIndex];
       area.images = area.images || [];
       area.images.push(e.target.result);
-      localStorage.setItem('projects', JSON.stringify(projects));
+      set(ref(db, 'projects'), projects);
       displayAreaImages(currentAreaIndex);
       document.getElementById("continueUploadDialog").style.display = "flex";
     };
@@ -488,7 +488,7 @@ function confirmDeleteImage(areaIndex, imageIndex) {
   const area = proj.areas[areaIndex];
 
   area.images.splice(imageIndex, 1);
-  localStorage.setItem('projects', JSON.stringify(projects));
+  set(ref(db, 'projects'), projects);
   openArea(areaIndex);
 }
 
@@ -513,7 +513,7 @@ function submitAreaEdit() {
   const proj = projects[currentProjectIndex];
   proj.areas[currentAreaIndex].name = newName;
 
-  localStorage.setItem('projects', JSON.stringify(projects));
+  set(ref(db, 'projects'), projects);
   closeEditAreaDialog();
   displayAreas();
 }
@@ -541,7 +541,7 @@ function deleteArea(areaIndex) {
 function confirmDeleteArea(areaIndex) {
   const proj = projects[currentProjectIndex];
   proj.areas.splice(areaIndex, 1);
-  localStorage.setItem('projects', JSON.stringify(projects));
+ set(ref(db, 'projects'), projects);
   openProject(currentProjectIndex);
 }
 function editProject(projectIndex) {
@@ -570,7 +570,7 @@ function submitProjectEdit() {
   proj.date = date;
   proj.info = info;
 
-  localStorage.setItem('projects', JSON.stringify(projects));
+ set(ref(db, 'projects'), projects);
   closeEditProjectDialog();
   displayProjects();
 }
@@ -596,7 +596,7 @@ function deleteProject(projectIndex) {
 
 function confirmDeleteProject(projectIndex) {
   projects.splice(projectIndex, 1);
-  localStorage.setItem('projects', JSON.stringify(projects));
+ set(ref(db, 'projects'), projects);
   displayProjects();
 }
 async function exportProjectToPDF() {
@@ -770,7 +770,7 @@ function saveNote(areaIndex) {
     if (!area.notes) area.notes = [];
 
     area.notes.push(text);
-    localStorage.setItem('projects', JSON.stringify(projects));
+    set(ref(db, 'projects'), projects);
     openArea(areaIndex);
 }
 function viewNote(areaIndex, noteIndex) {
@@ -830,7 +830,7 @@ function confirmDeleteNote(areaIndex, noteIndex) {
   const proj = projects[currentProjectIndex];
   const area = proj.areas[areaIndex];
   area.notes.splice(noteIndex, 1);
-  localStorage.setItem('projects', JSON.stringify(projects));
+  set(ref(db, 'projects'), projects);
   openArea(areaIndex);
 }
 function saveEditedNote(areaIndex, noteIndex) {
@@ -844,7 +844,7 @@ function saveEditedNote(areaIndex, noteIndex) {
     const area = proj.areas[areaIndex];
     area.notes[noteIndex] = newText;
 
-    localStorage.setItem('projects', JSON.stringify(projects));
+  set(ref(db, 'projects'), projects);
     viewNote(areaIndex, noteIndex);
 }
 
@@ -912,7 +912,7 @@ function saveNoteWithAudio(areaIndex) {
             return;
         }
 
-        localStorage.setItem('projects', JSON.stringify(projects));
+        set(ref(db, 'projects'), projects);
         openArea(areaIndex);
     }, 500); // 500 ms forsinkelse
 }
