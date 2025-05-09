@@ -416,7 +416,46 @@ function updateHeader(project = null) {
         `;
     }
 }
+function startImageUpload(source) {
+  closeImageSourceDialog();
 
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "image/*";
+
+  if (source === "camera") {
+    input.capture = "environment";
+  }
+
+  input.onchange = function (event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const proj = projects[currentProjectIndex];
+      const area = proj.areas[currentAreaIndexForImage];
+      area.images.push(e.target.result);
+      localStorage.setItem('projects', JSON.stringify(projects));
+      displayAreaImages(currentAreaIndexForImage);
+
+      // vis ny dialog
+      document.getElementById("continueUploadDialog").style.display = "flex";
+    };
+    reader.readAsDataURL(file);
+  };
+
+  input.click();
+}
+function continueImageUpload() {
+  document.getElementById("continueUploadDialog").style.display = "none";
+  openImageSourceDialog(currentAreaIndexForImage);
+}
+
+function closeContinueUpload() {
+  document.getElementById("continueUploadDialog").style.display = "none";
+  openArea(currentAreaIndexForImage);
+}
 function deleteImage(areaIndex, imageIndex) {
   const proj = projects[currentProjectIndex];
   const area = proj.areas[areaIndex];
