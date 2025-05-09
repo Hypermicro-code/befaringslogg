@@ -4,7 +4,13 @@ let currentProjectIndex = null;
 let mediaRecorder;
 let audioChunks = [];
 
-
+function loadProjectsFromFirebase() {
+  firebase.database().ref("projects").once("value").then(snapshot => {
+    const data = snapshot.val();
+    projects = data ? Object.values(data) : [];
+    displayProjects();
+  });
+}
 function createProject() {
   document.getElementById("projectNameInput").value = "";
   document.getElementById("projectDateInput").value = new Date().toISOString().split('T')[0];
