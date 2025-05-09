@@ -14,3 +14,20 @@ const firebaseConfig = {
 // Initialiser app og database
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
+// firebase-init.js
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, set, get, child } from "firebase/database";
+
+const firebaseConfig = {
+  apiKey: "XXX",
+  authDomain: "XXX",
+  projectId: "XXX",
+  storageBucket: "XXX",
+  messagingSenderId: "XXX",
+  appId: "XXX"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+export { db, ref, set, get, child };
