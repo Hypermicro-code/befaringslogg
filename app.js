@@ -416,13 +416,23 @@ function updateHeader(project = null) {
         `;
     }
 }
+
+// Dialog for valg av bildekilde
+function openImageSourceDialog(areaIndex) {
+  currentAreaIndex = areaIndex;
+  document.getElementById("imageSourceDialog").style.display = "flex";
+}
+
+function closeImageSourceDialog() {
+  document.getElementById("imageSourceDialog").style.display = "none";
+}
+
 function startImageUpload(source) {
   closeImageSourceDialog();
 
   const input = document.createElement("input");
   input.type = "file";
   input.accept = "image/*";
-
   if (source === "camera") {
     input.capture = "environment";
   }
@@ -434,12 +444,11 @@ function startImageUpload(source) {
     const reader = new FileReader();
     reader.onload = function (e) {
       const proj = projects[currentProjectIndex];
-      const area = proj.areas[currentAreaIndexForImage];
+      const area = proj.areas[currentAreaIndex];
+      area.images = area.images || [];
       area.images.push(e.target.result);
       localStorage.setItem('projects', JSON.stringify(projects));
-      displayAreaImages(currentAreaIndexForImage);
-
-      // vis ny dialog
+      displayAreaImages(currentAreaIndex);
       document.getElementById("continueUploadDialog").style.display = "flex";
     };
     reader.readAsDataURL(file);
@@ -447,14 +456,15 @@ function startImageUpload(source) {
 
   input.click();
 }
+
 function continueImageUpload() {
   document.getElementById("continueUploadDialog").style.display = "none";
-  openImageSourceDialog(currentAreaIndexForImage);
+  openImageSourceDialog(currentAreaIndex);
 }
 
 function closeContinueUpload() {
   document.getElementById("continueUploadDialog").style.display = "none";
-  openArea(currentAreaIndexForImage);
+  openArea(currentAreaIndex);
 }
 function deleteImage(areaIndex, imageIndex) {
   const proj = projects[currentProjectIndex];
